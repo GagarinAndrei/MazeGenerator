@@ -41,7 +41,7 @@ The door opened, and Alice and Charlie hurried out of the office, looking downca
 
 Alice and Charlie walked away in the opposite direction, not paying attention to Eve standing nearby. She waited a few minutes, then braced herself and knocked on the door.
 
-`-` Come in. Oh, Eve, yes, come in, - the boss said. The spacious room with wide windows was full of various books on algorithms, mathematics, and programming. In the middle of the room was a table with a plastic sign that said "Robert M."
+`-` Come in. Oh, Eve, yes, come in, — the boss said. The spacious room with wide windows was full of various books on algorithms, mathematics, and programming. In the middle of the room was a table with a plastic sign that said "Robert M."
 
 `-` Bob, about the experiments for the task...''
 
@@ -78,7 +78,7 @@ In this example, the starting point is 10; 1, and the ending point is 6; 10.
 
 The maze can be stored in a file as a number of rows and columns, as well as two matrices containing the positions of vertical and horizontal walls respectively.
 
-The first matrix shows the wall to the right of each cell, and the second - the wall at the bottom.
+The first matrix shows the wall to the right of each cell, and the second — the wall at the bottom.
 
 An example of such a file:
 ```
@@ -113,9 +113,9 @@ A loop is a part of the maze with passages that can be walked in "circles". The 
 
 In many games there is a need for branching locations, such as caves.
 They can be created by generation using the cellular automaton.
-This kind of generation uses an idea similar to the Game of Life you are already familiar with. The idea of the proposed algorithm consists of implementing only two steps: first, the whole field is filled randomly with walls - i.e., for each cell it is randomly determined whether it will be free or impassable - and then the map state is updated several times according to the conditions, similar to the birth/death ones in the Game of Life.
+This kind of generation uses an idea similar to the Game of Life you are already familiar with. The idea of the proposed algorithm consists of implementing only two steps: first, the whole field is filled randomly with walls — i.e., for each cell it is randomly determined whether it will be free or impassable — and then the map state is updated several times according to the conditions, similar to the birth/death ones in the Game of Life.
 
-The rules are simpler than in the Game of Life - there are two special variables, one for "birth" of "dead" cells (the "birth" limit) and one for destruction of "live" cells (the "death" limit).
+The rules are simpler than in the Game of Life — there are two special variables, one for "birth" of "dead" cells (the "birth" limit) and one for destruction of "live" cells (the "death" limit).
 If "live" cells are surrounded by "live" cells, the number of which is less than the "death" limit, they "die". In the same way, if "dead" cells are next to "live" cells, the number of which is greater than the "birth" limit, they become "live".
 
 An example of the algorithm's result (the first picture shows only the initialized maze, and the second picture shows a maze in which there are no more changes in subsequent steps): \
