@@ -3,36 +3,49 @@
 
 #include <sys/types.h>
 #include <vector>
-#include <sys/types.h>
 
 namespace s21 {
 
 class Maze {
 
 public:
-  using MazeMatrix = std::vector<std::vector<uint>>;
+  typedef struct {
+    bool r_wall;
+    bool b_wall;
+    uint set;
+  } Cell;
+
+  using Matrix = std::vector<std::vector<Cell>>;
+
   Maze(uint rows, uint cols);
   ~Maze() = default;
 
   uint getHeight() { return rows_; }
   uint getWidth() { return cols_; }
-  uint getCell(int i, int j) { return maze_[i][j]; }
-  MazeMatrix getRightWallMatrix() { return this->right_wall_matrix_; }
+  Cell getCell(int i, int j) { return maze_[i][j]; }
 
   void generate();
+  void printMaze();
+  void printLabirinth();
 
 private:
-  void setRightWall(std::vector<uint> &line);
-  bool trueOrFalseGenerator();
+  void generateFirstLine();
+  void generateOtherLines();
+  void generateLastLine();
 
+  void setRightWall(std::vector<Cell> &line);
+  void setBottomWall(std::vector<Cell> &line);
+
+  int setWithoutBottomWall(std::vector<Cell> &line, uint set);
+
+  bool trueOrFalseGenerator();
+  void unionSets(std::vector<Cell> &line, Cell current, Cell next);
 
   uint rows_;
   uint cols_;
-  uint count_;
+  uint count_ = 1;
 
-  MazeMatrix maze_;
-  MazeMatrix right_wall_matrix_;
-  MazeMatrix sets_matrix_;
+  Matrix maze_;
 };
 } // namespace s21
 
