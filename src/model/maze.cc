@@ -49,7 +49,7 @@ void Maze::generateOtherLines() {
 void Maze::generateLastLine() {
   std::vector<Cell> line(this->maze_.back());
 
-  for (size_t i = 0; i < line.size(); ++i) {
+  for (size_t i = 0; i < line.size() - 1; ++i) {
     line[i].b_wall = true;
     if (line[i].set != line[i + 1].set) {
       line[i].r_wall = false;
@@ -62,15 +62,13 @@ void Maze::generateLastLine() {
 }
 
 void Maze::setRightWall(std::vector<Cell> &line) {
-  for (size_t i = 0; i < line.size(); i++) {
+  for (size_t i = 0; i < line.size() - 1; i++) {
     if (trueOrFalseGenerator() == true) {
       line[i].r_wall = true;
+    } else if (line[i].set == line[i + 1].set) {
+      line[i].r_wall = true;
     } else {
-      if (line[i].set == line[i + 1].set) {
-        line[i].r_wall = true;
-      } else {
-        unionSets(line, line[i], line[i + 1]);
-      }
+      unionSets(line, line[i], line[i + 1]);
     }
   }
   line.back().r_wall = true;

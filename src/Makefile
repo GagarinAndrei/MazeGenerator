@@ -36,7 +36,7 @@ run:
 	./${TARGET}
 
 cli:
-	$(CC) ${SOURCES} ${CFLAGS} ${LIBRARIES} -o ${TARGET}_exe
+	$(CC) -g ${SOURCES} ${CFLAGS} ${LIBRARIES} -o ${TARGET}_exe
 	./${TARGET}_exe
 
 gcov_report_snake: clean
