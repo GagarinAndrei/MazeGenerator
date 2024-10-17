@@ -129,3 +129,11 @@ Module.symvers
 Mkfile.old
 Makefile.old
 dkms.conf
+
+.DS_Store
+.cache/
+.vscode/
+build/
+src/Maze
+src/Maze_exe
+src/view/build/
