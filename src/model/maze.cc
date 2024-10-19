@@ -32,12 +32,11 @@ void Maze::generateOtherLines() {
   for (Cell &cell : line) {
     cell.r_wall = false;
     if (cell.b_wall == true) {
-      cell.set = 0;
+      cell.set = count_++;
     }
     cell.b_wall = false;
   }
 
-  this->assignUniqueSetToCells(line);
   this->setRightWall(line);
   this->setBottomWall(line);
 
@@ -46,15 +45,24 @@ void Maze::generateOtherLines() {
 
 void Maze::generateLastLine() {
   std::vector<Cell> line(this->maze_.back());
+
   for (Cell &cell : line) {
-    cell.b_wall = true;
+    cell.r_wall = false;
+    if (cell.b_wall == true) {
+      cell.set = count_++;
+    }
+    cell.b_wall = false;
   }
+
+  this->setRightWall(line);
+  this->setBottomWall(line);
 
   for (size_t i = 0; i < line.size(); i++) {
     if (line[i].set != line[i + 1].set) {
       line[i].r_wall = false;
-      this->unionSets(line, line[i], line[i + 1]);
-    };
+    }
+    unionSets(line, line[i], line[i + 1]);
+    line[i].b_wall = true;
   }
 
   this->maze_.push_back(line);
@@ -69,16 +77,17 @@ void Maze::assignUniqueSetToCells(std::vector<Cell> &line) {
 }
 
 void Maze::setRightWall(std::vector<Cell> &line) {
-  for (size_t i = 0; i < line.size(); i++) {
-    if (trueOrFalseGenerator() == true) {
-      line[i].r_wall = true;
-    } else if (line[i].set == line[i + 1].set) {
-      line[i].r_wall = true;
+  for (size_t i = 0; i < line.size() - 1; i++) {
+    if (trueOrFalseGenerator() == false) {
+      if (line[i].set == line[i + 1].set) {
+        line[i].r_wall = true;
+      } else {
+        unionSets(line, line[i], line[i + 1]);
+      }
     } else {
-      unionSets(line, line[i], line[i + 1]);
+      line[i].r_wall = true;
     }
   }
-  line.back().r_wall = true;
 }
 
 void Maze::setBottomWall(std::vector<Cell> &line) {
@@ -128,9 +137,12 @@ void Maze::unionSets(std::vector<Cell> &line, Cell current, Cell next) {
 }
 
 void Maze::printSets() {
+  std::cout << std::endl;
+  std::cout << "-= SETS =-" << std::endl;
+  std::cout << std::endl;
   for (size_t i = 0; i < this->maze_.size(); i++) {
     for (size_t j = 0; j < this->maze_[0].size(); j++) {
-      std::cout << std::setw(2) << std::setfill('0') << maze_[i][j].set << " ";
+      std::cout << std::setw(3) << std::setfill('0') << maze_[i][j].set << " ";
     }
     std::cout << std::endl;
     std::cout << std::endl;
@@ -138,8 +150,21 @@ void Maze::printSets() {
 }
 
 void Maze::printLabirinth() {
+  std::cout << std::endl;
+  std::cout << "-= MAZE =-" << std::endl;
+  std::cout << std::endl;
   for (size_t i = 0; i < this->maze_.size(); i++) {
     for (size_t j = 0; j < this->maze_[0].size(); j++) {
+      if (i == 0 && j == 0) {
+        for (int k = 0; k < cols_ + 1; k++) {
+          std::cout << "__";
+        }
+        std::cout << std::endl;
+      }
+      if (j == 0) {
+        std::cout << "|";
+      }
+
       if (maze_[i][j].r_wall == true && maze_[i][j].b_wall == false) {
         std::cout << " |";
       }
@@ -151,6 +176,9 @@ void Maze::printLabirinth() {
       }
       if (maze_[i][j].b_wall == true && maze_[i][j].r_wall == true) {
         std::cout << "_|";
+      }
+      if (j == maze_[0].size() - 1) {
+        std::cout << "|";
       }
     }
     std::cout << std::endl;

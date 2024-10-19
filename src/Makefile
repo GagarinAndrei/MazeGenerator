@@ -48,14 +48,14 @@ gcov_report_snake: clean
 	${OPEN_COMMAND} ./report/index.html
 	make clean_gcov
 
-style_check:
+clang_check:
 	@find .. -type f -name "*.c" -exec clang-format -n  -style=Google {} \;
 	@find .. -type f -name "*.cc" -exec clang-format -n  -style=Google {} \;
 	@find .. -type f -name "*.cpp" -exec clang-format -n  -style=Google {} \;
 	@find .. -type f -name "*.h" -exec clang-format -n -style=Google {} \;
 	@echo "Clang format style check is finished"
 
-style:
+clang_format:
 	@find .. -type f -name "*.c" -exec clang-format -i -style=Google {} \;
 	@find .. -type f -name "*.cc" -exec clang-format -i -style=Google {} \;
 	@find .. -type f -name "*.cpp" -exec clang-format -i -style=Google {} \;
