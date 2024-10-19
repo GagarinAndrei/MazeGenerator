@@ -3,7 +3,7 @@
 #include <sys/types.h>
 
 #include <cstddef>
-#include <iomanip>
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <vector>
@@ -16,6 +16,63 @@ void Maze::generate() {
     generateOtherLines();
   }
   generateLastLine();
+}
+
+void Maze::saveMazeInFile() {
+  std::ofstream file;
+  file.open("maze.txt");
+
+  if (file.is_open()) {
+    file << this->rows_ << " " << this->cols_ << std::endl;
+
+    for (size_t i = 0; i < this->maze_.size(); i++) {
+      for (size_t j = 0; j < this->maze_[0].size(); j++) {
+        file << maze_[i][j].r_wall << " ";
+      }
+      file << std::endl;
+    }
+    file << std::endl;
+
+    for (size_t i = 0; i < this->maze_.size(); i++) {
+      for (size_t j = 0; j < this->maze_[0].size(); j++) {
+        file << maze_[i][j].b_wall << " ";
+      }
+      file << std::endl;
+    }
+    file << std::endl;
+
+    file.close();
+  }
+}
+
+void Maze::loadMazeFromFile(const std::string &filename) {
+  std::ifstream file(filename);
+
+  if (!file.is_open()) {
+    std::cerr << "Failed to open file: " << filename << std::endl;
+    return;
+  }
+
+  file >> rows_ >> cols_;
+  maze_.resize(rows_, std::vector<Cell>(cols_));
+
+  for (int i = 0; i < rows_; ++i) {
+    for (int j = 0; j < cols_; ++j) {
+      int wall;
+      file >> wall;
+      maze_[i][j].r_wall = (wall == 1);
+    }
+  }
+
+  for (int i = 0; i < rows_; ++i) {
+    for (int j = 0; j < cols_; ++j) {
+      int wall;
+      file >> wall;
+      maze_[i][j].b_wall = (wall == 1);
+    }
+  }
+
+  file.close();
 }
 
 void Maze::generateFirstLine() {
@@ -93,8 +150,7 @@ void Maze::setRightWall(std::vector<Cell> &line) {
 void Maze::setBottomWall(std::vector<Cell> &line) {
   for (Cell &cell : line) {
     if (trueOrFalseGenerator() == true) {
-      if (countOfSetsWithoutBottomWall(line, cell.set) > 1 /*||
-          countCellInSet(line, cell.set) > 1*/) {
+      if (countOfSetsWithoutBottomWall(line, cell.set) > 1) {
         cell.b_wall = true;
       }
     }
@@ -136,53 +192,18 @@ void Maze::unionSets(std::vector<Cell> &line, Cell current, Cell next) {
   }
 }
 
-void Maze::printSets() {
-  std::cout << std::endl;
-  std::cout << "-= SETS =-" << std::endl;
-  std::cout << std::endl;
-  for (size_t i = 0; i < this->maze_.size(); i++) {
-    for (size_t j = 0; j < this->maze_[0].size(); j++) {
-      std::cout << std::setw(3) << std::setfill('0') << maze_[i][j].set << " ";
-    }
-    std::cout << std::endl;
-    std::cout << std::endl;
-  }
-}
-
-void Maze::printLabirinth() {
-  std::cout << std::endl;
-  std::cout << "-= MAZE =-" << std::endl;
-  std::cout << std::endl;
-  for (size_t i = 0; i < this->maze_.size(); i++) {
-    for (size_t j = 0; j < this->maze_[0].size(); j++) {
-      if (i == 0 && j == 0) {
-        for (int k = 0; k < cols_ + 1; k++) {
-          std::cout << "__";
-        }
-        std::cout << std::endl;
-      }
-      if (j == 0) {
-        std::cout << "|";
-      }
-
-      if (maze_[i][j].r_wall == true && maze_[i][j].b_wall == false) {
-        std::cout << " |";
-      }
-      if (maze_[i][j].b_wall == true && maze_[i][j].r_wall == false) {
-        std::cout << "__";
-      }
-      if (maze_[i][j].b_wall == false && maze_[i][j].r_wall == false) {
-        std::cout << "  ";
-      }
-      if (maze_[i][j].b_wall == true && maze_[i][j].r_wall == true) {
-        std::cout << "_|";
-      }
-      if (j == maze_[0].size() - 1) {
-        std::cout << "|";
-      }
-    }
-    std::cout << std::endl;
-  }
-}
+// void Maze::printSets() {
+//   std::cout << std::endl;
+//   std::cout << "-= SETS =-" << std::endl;
+//   std::cout << std::endl;
+//   for (size_t i = 0; i < this->maze_.size(); i++) {
+//     for (size_t j = 0; j < this->maze_[0].size(); j++) {
+//       std::cout << std::setw(3) << std::setfill('0') << maze_[i][j].set << "
+//       ";
+//     }
+//     std::cout << std::endl;
+//     std::cout << std::endl;
+//   }
+// }
 
 }  // namespace s21

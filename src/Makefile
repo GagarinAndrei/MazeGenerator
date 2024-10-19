@@ -2,7 +2,7 @@
 
 CC = g++
 CFLAGS = -Wall -Wextra -Werror -std=c++17
-LIBRARIES =
+LIBRARIES = -lncurses
 GCOV_FLAGS := -fprofile-arcs -ftest-coverage
 LCOV_FLAGS := --ignore-errors inconsistent,empty --no-external -t -s
 VALGRIND_FLAGS := --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log
@@ -11,6 +11,8 @@ TARGET :=Maze
 DIST_DIR :=archive
 
 SOURCES := model/*.cc
+CONTROLLER := controller/*.cc
+CLI_VIEW := view/cli/*.cc
 
 ifeq ($(shell uname), Linux)
 	TEST_FLAGS := -lcheck -lgtest -lm -lpthread -lrt -lsubunit
@@ -36,10 +38,9 @@ run:
 	./${TARGET}
 
 cli:
-	$(CC) -g ${SOURCES} ${CFLAGS} ${LIBRARIES} -o ${TARGET}_exe
-	./${TARGET}_exe
+	$(CC) -g ${SOURCES} ${CONTROLLER} ${CLI_VIEW} ${CFLAGS} ${LIBRARIES} -o ${TARGET}_exe
 
-gcov_report_snake: clean
+gcov_report: clean
 	@mkdir -p report
 	${CC} $(BACKEND_SOURCES) $(TEST_FLAGS) $(GCOV_FLAGS) -o ./gcov_report.out
 	./gcov_report.out
