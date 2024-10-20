@@ -1,7 +1,6 @@
 #ifndef MODEL_MAZE_H_
 #define MODEL_MAZE_H_
 
-#include <stdexcept>
 #include <string>
 #include <vector>
 namespace s21 {
@@ -34,10 +33,10 @@ class Maze {
   void setSize(int rows, int cols) {
     this->rows_ = rows;
     this->cols_ = cols;
-    maze_.resize(rows);
-    for (int i = 0; i < rows; i++) {
-      maze_[i].resize(cols);
-    }
+    // maze_.resize(rows);
+    // for (int i = 0; i < rows; i++) {
+    //   maze_[i].resize(cols);
+    // }
   };
 
   inline int getHeight() { return rows_; }
