@@ -1,53 +1,82 @@
-import QtQuick
-import QtQuick.Controls
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import com.example.maze 1.0
 
-Item {
-    id: root
+ApplicationWindow {
+    visible: true
     width: 800
     height: 600
 
-    property var mazeData: [] // Данные лабиринта
-    property int cellSize: 20 // Размер ячейки
+    Maze {
+        id: mazeLogic
+        onGenerated: {
+            console.log("Лабиринт сгенерирован");
+            mazeCanvas.updateMaze(); // Обновляем отрисовку после генерации
+        }
+    }
 
-    Canvas {
-        id: canvas
-        anchors.fill: parent
+    Rectangle {
+        width: parent.width
+        height: parent.height
+        color: "lightgray"
 
-        onPaint: {
-            var ctx = getContext("2d");
-            ctx.clearRect(0, 0, width, height);
-            ctx.strokeStyle = "black";
-            ctx.lineWidth = 2;
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                // Обработка клика по лабиринту
+                let cell = mazeLogic.getCell(mouse.y / cellHeight, mouse.x / cellWidth);
+                console.log("Кликнули по ячейке:", cell.set);
+            }
+        }
+        
+        Button {
+            text: "Сгенерировать лабиринт"
+            onClicked:{ 
+                mazeLogic.setSize(10, 10);
+                mazeLogic.generate();
+            }
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        
+        // Вычисление размеров ячеек (например)
+        property real cellHeight: height / mazeLogic.getHeight()
+        property real cellWidth: width / mazeLogic.getWidth()
 
-            for (var row = 0; row < mazeData.length; row++) {
-                for (var col = 0; col < mazeData[row].length; col++) {
-                    var cell = mazeData[row][col];
-                    var x = col * cellSize;
-                    var y = row * cellSize;
+        // Компонент для отрисовки лабиринта
+        Rectangle {
+            id: mazeCanvas
+            anchors.fill: parent
 
-                    // Рисуем правую стену
-                    if (cell.rightWall) {
-                        ctx.beginPath();
-                        ctx.moveTo(x + cellSize, y);
-                        ctx.lineTo(x + cellSize, y + cellSize);
-                        ctx.stroke();
-                    }
-
-                    // Рисуем нижнюю стену
-                    if (cell.bottomWall) {
-                        ctx.beginPath();
-                        ctx.moveTo(x, y + cellSize);
-                        ctx.lineTo(x + cellSize, y + cellSize);
-                        ctx.stroke();
+            function updateMaze() {
+                // Очищаем предыдущую отрисовку
+                children.forEach(child => child.destroy());
+                
+                for (let y = 0; y < mazeLogic.getHeight(); y++) {
+                    for (let x = 0; x < mazeLogic.getWidth(); x++) {
+                        let cell = mazeLogic.getCell(y, x);
+                        if (cell.isWall) {
+                            // Создаем стену для ячейки с wall
+                            Rectangle {
+                                width: cellWidth
+                                height: cellHeight
+                                color: "black"
+                                x: x * cellWidth
+                                y: y * cellHeight
+                            }
+                        } else {
+                            // Создаем пустую ячейку (можно добавить цвет или другие элементы)
+                            Rectangle {
+                                width: cellWidth
+                                height: cellHeight
+                                color: "white"
+                                x: x * cellWidth
+                                y: y * cellHeight
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-
-    // Обновляем данные лабиринта и перерисовываем
-    function updateMaze(newMazeData) {
-        mazeData = newMazeData;
-        canvas.requestPaint();
     }
 }

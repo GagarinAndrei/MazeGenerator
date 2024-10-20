@@ -31,8 +31,8 @@ endif
 all: clean install run
 
 install:
-	cd view && cmake -B build . && cmake --build build
-	cp view/build/${TARGET} .
+	cd view/desktop && cmake -B build . && cmake --build build
+	cp view/desktop/build/${TARGET} .
 
 run:
 	./${TARGET}
