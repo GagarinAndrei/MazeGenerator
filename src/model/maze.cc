@@ -121,7 +121,8 @@ void Maze::generateLastLine() {
     unionSets(line, line[i], line[i + 1]);
     line[i].b_wall = true;
   }
-
+  line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
+                              // классно
   this->maze_.push_back(line);
 }
 
@@ -145,6 +146,8 @@ void Maze::setRightWall(std::vector<Cell> &line) {
       line[i].r_wall = true;
     }
   }
+  line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
+                              // классно
 }
 
 void Maze::setBottomWall(std::vector<Cell> &line) {

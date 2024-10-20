@@ -10,7 +10,6 @@ class CliView {
   CliView(Controller &controller) : controller_(controller) {}
   ~CliView() = default;
   void printLabirinth();
-  void initCliGui();
 
  private:
   Controller &controller_;
