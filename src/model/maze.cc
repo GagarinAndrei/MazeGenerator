@@ -1,7 +1,5 @@
 #include "maze.h"
-
 #include <sys/types.h>
-
 #include <cstddef>
 #include <fstream>
 #include <iostream>
