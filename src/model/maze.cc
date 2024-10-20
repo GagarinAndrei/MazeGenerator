@@ -11,6 +11,11 @@
 namespace s21 {
 
 void Maze::generate() {
+  if (this->rows_ <= 0 || this->cols_ <= 0 || this->rows_ > MAX_MAZE_SIZE ||
+      this->cols_ > 50) {
+    throw std::out_of_range("Invalid maze size");
+  }
+
   generateFirstLine();
   for (int i = 1; i < rows_ - 1; i++) {
     generateOtherLines();

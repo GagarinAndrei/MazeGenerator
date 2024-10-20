@@ -1,5 +1,6 @@
 #ifndef MODEL_MAZE_H_
 #define MODEL_MAZE_H_
+#define MAX_MAZE_SIZE 50
 
 #include <string>
 #include <vector>
@@ -12,7 +13,6 @@ class Maze {
     bool b_wall = false;
     int set = 0;
   } Cell;
-
   using Matrix = std::vector<std::vector<Cell>>;
 
   Maze(){};
