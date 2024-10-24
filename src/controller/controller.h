@@ -1,9 +1,6 @@
 #ifndef CONTROLLER_CONTROLLER_H_
 #define CONTROLLER_CONTROLLER_H_
 
-#include <qdebug.h>
-#include <qlogging.h>
-#include <qtmetamacros.h>
 #include <qvariant.h>
 
 #include "../model/maze.h"
@@ -27,18 +24,16 @@ class Controller : public QObject {
 
   inline Maze &getMaze() { return this->maze_; }
 
-  QVariant getMazeData() const;
+  Q_INVOKABLE QVariant getMazeData() const;
   inline int getHeight() { return this->maze_.getHeight(); }
   inline int getWidth() { return this->maze_.getWidth(); }
   inline void setHeight(int height) {
     this->maze_.setHeight(height);
     emit mazeHeightChanged();
-    qDebug() << "height: " << maze_.getHeight();
   }
   inline void setWidth(int width) {
     this->maze_.setWidth(width);
     emit mazeWidthChanged();
-    qDebug() << "width: " << maze_.getWidth();
   }
 
   Q_INVOKABLE void generateMaze();

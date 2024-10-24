@@ -11,6 +11,7 @@
 namespace s21 {
 
 void Maze::generate() {
+  cleanMaze();
   if (this->rows_ <= 0 || this->cols_ <= 0 || this->rows_ > MAX_MAZE_SIZE ||
       this->cols_ > 50) {
     throw std::out_of_range("Invalid maze size");
@@ -129,6 +130,13 @@ void Maze::generateLastLine() {
   line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
                               // классно
   this->maze_.push_back(line);
+}
+
+void Maze::cleanMaze() {
+  for (auto &line : this->maze_) {
+    line.clear();
+  }
+  this->maze_.clear();
 }
 
 void Maze::assignUniqueSetToCells(std::vector<Cell> &line) {

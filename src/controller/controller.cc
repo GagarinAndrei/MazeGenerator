@@ -12,8 +12,24 @@ void Controller::loadMazeFromFile(const std::string &filename) {
 }
 
 QVariant Controller::getMazeData() const {
+  // QVariantList mazeData;
+  // for (const auto &row : maze_.getMaze()) {
+  //   QVariantList rowData;
+  //   for (const auto &cell : row) {
+  //     QVariantMap cellData;
+  //     cellData["r_wall"] = cell.r_wall;
+  //     cellData["b_wall"] = cell.b_wall;
+  //     rowData.append(cellData);
+  //   }
+  //   mazeData.append(rowData);
+  // }
+  // qDebug() << "Maze Data from getMazeData:" << mazeData;  // for debug
+
+  // return mazeData;
   QVariantList mazeData;
-  for (const auto &row : maze_.getMaze()) {
+  auto maze = maze_.getMaze();
+  qDebug() << "Maze size:" << maze.size();  // for debug
+  for (const auto &row : maze) {
     QVariantList rowData;
     for (const auto &cell : row) {
       QVariantMap cellData;
@@ -24,7 +40,6 @@ QVariant Controller::getMazeData() const {
     mazeData.append(rowData);
   }
   qDebug() << "Maze Data:" << mazeData;  // for debug
-
   return mazeData;
 }
 
@@ -34,12 +49,6 @@ void Controller::printLabirinth() {
   Maze &maze = this->getMaze();
   int height = maze.getHeight();
   int width = maze.getWidth();
-
-  // Вывод верхней границы
-  // for (int k = 0; k < width; ++k) {
-  //     qDebug() << "__";
-  // }
-  // qDebug();
 
   for (int i = 0; i < height; ++i) {
     QString row;

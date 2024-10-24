@@ -39,6 +39,8 @@ class Maze {
   void generateOtherLines();
   void generateLastLine();
 
+  void cleanMaze();
+
   void assignUniqueSetToCells(std::vector<Cell> &line);
 
   void setRightWall(std::vector<Cell> &line);
