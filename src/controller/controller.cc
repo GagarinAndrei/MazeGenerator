@@ -9,26 +9,13 @@ void Controller::generateMaze() {
 void Controller::saveMazeInFile() { this->maze_.saveMazeInFile(); }
 void Controller::loadMazeFromFile(const std::string &filename) {
   this->maze_.loadMazeFromFile(filename);
+  emit this->mazeDataChanged();
 }
 
 QVariant Controller::getMazeData() const {
-  // QVariantList mazeData;
-  // for (const auto &row : maze_.getMaze()) {
-  //   QVariantList rowData;
-  //   for (const auto &cell : row) {
-  //     QVariantMap cellData;
-  //     cellData["r_wall"] = cell.r_wall;
-  //     cellData["b_wall"] = cell.b_wall;
-  //     rowData.append(cellData);
-  //   }
-  //   mazeData.append(rowData);
-  // }
-  // qDebug() << "Maze Data from getMazeData:" << mazeData;  // for debug
-
-  // return mazeData;
   QVariantList mazeData;
   auto maze = maze_.getMaze();
-  qDebug() << "Maze size:" << maze.size();  // for debug
+  // qDebug() << "Maze size:" << maze.size(); // for debug
   for (const auto &row : maze) {
     QVariantList rowData;
     for (const auto &cell : row) {
@@ -39,7 +26,7 @@ QVariant Controller::getMazeData() const {
     }
     mazeData.append(rowData);
   }
-  qDebug() << "Maze Data:" << mazeData;  // for debug
+  // qDebug() << "Maze Data:" << mazeData; // for debug
   return mazeData;
 }
 

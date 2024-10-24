@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt.labs.platform
 
 ApplicationWindow {
     id: root
@@ -99,11 +100,33 @@ ApplicationWindow {
                     id: saveButton
                     text: "Save"
                     font.pixelSize: 18
+                    onClicked: {
+                        Controller.saveMazeInFile();
+                    }
                 }
+
                 Button {
                     id: loadButton
                     text: "Load"
                     font.pixelSize: 18
+                    onClicked: {
+                        fileDialog.open();
+                    }
+                }
+
+                FileDialog {
+                    id: fileDialog
+                    title: "Choose a file with maze"
+                    defaultSuffix: "txt"
+                    nameFilters: ["Text files (*.txt)"]
+                    onAccepted: {
+                        //TODO преобразовать строку в std::string и передать её в функцию
+                        var fileUrl = fileDialog.file.toString();
+                        var filePath = fileUrl.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "");
+                        var filePathString = filePath.toString();
+                        console.log("File Path String:", filePathString);  // Добавьте это для отладки
+                        Controller.loadMazeFromFile(filePathString);
+                    }
                 }
             }
 
@@ -154,7 +177,7 @@ ApplicationWindow {
                 Layout.alignment: Qt.AlignHCenter
                 onClicked: {
                     Controller.generateMaze();
-                    Controller.printLabirinth();
+                    // Controller.printLabirinth();
                 }
             }
         }
