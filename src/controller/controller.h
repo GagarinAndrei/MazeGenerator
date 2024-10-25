@@ -37,8 +37,8 @@ class Controller : public QObject {
   }
 
   Q_INVOKABLE void generateMaze();
-  Q_INVOKABLE void saveMazeInFile();
-  Q_INVOKABLE void loadMazeFromFile(const std::string &filename);
+  // Q_INVOKABLE void saveMazeInFile(const std::string &filename);
+  // Q_INVOKABLE void loadMazeFromFile(const std::string &filename);
 
   Q_INVOKABLE void printLabirinth();  // for debug
 
@@ -46,6 +46,10 @@ class Controller : public QObject {
   void mazeDataChanged();
   void mazeHeightChanged();
   void mazeWidthChanged();
+
+ public slots:
+  void saveMazeInFile(const QString &filePath);
+  void loadMazeFromFile(const QString &filePath);
 
  private:
   Maze &maze_;

@@ -24,9 +24,9 @@ void Maze::generate() {
   generateLastLine();
 }
 
-void Maze::saveMazeInFile() {
+void Maze::saveMazeInFile(const std::string &filename) {
   std::ofstream file;
-  file.open("maze.txt");
+  file.open(filename);
 
   if (file.is_open()) {
     file << this->rows_ << " " << this->cols_ << std::endl;

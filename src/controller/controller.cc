@@ -6,9 +6,18 @@ void Controller::generateMaze() {
   this->maze_.generate();
   emit this->mazeDataChanged();
 }
-void Controller::saveMazeInFile() { this->maze_.saveMazeInFile(); }
-void Controller::loadMazeFromFile(const std::string &filename) {
-  this->maze_.loadMazeFromFile(filename);
+void Controller::saveMazeInFile(const QString &filePath) {
+  // this->maze_.saveMazeInFile(filename);
+  // Преобразуем QString в std::string
+  std::string filePathStd = filePath.toStdString();
+  qDebug() << "Saving maze to file:" << filePath;
+  this->maze_.saveMazeInFile(filePathStd);
+}
+
+void Controller::loadMazeFromFile(const QString &filePath) {
+  // this->maze_.loadMazeFromFile(filename);
+  std::string filePathStd = filePath.toStdString();
+  this->maze_.loadMazeFromFile(filePathStd);
   emit this->mazeDataChanged();
 }
 

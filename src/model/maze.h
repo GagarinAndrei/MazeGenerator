@@ -19,7 +19,7 @@ class Maze {
   ~Maze() = default;
 
   void generate();
-  void saveMazeInFile();
+  void saveMazeInFile(const std::string &filename);
   void loadMazeFromFile(const std::string &filename);
 
   void setSize(int rows, int cols) {

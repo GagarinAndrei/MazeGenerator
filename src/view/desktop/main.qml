@@ -13,13 +13,13 @@ ApplicationWindow {
     Connections {
         target: Controller
         function onMazeDataChanged() {
-            console.log("Maze data changed");
-            canvas.requestPaint(); // Запрашиваем перерисовку холста при изменении данных лабиринта
+            // console.log("Maze data changed");
+            canvas.requestPaint();
         }
     }
 
     RowLayout {
-        id: row
+        id: rowLayaut
         spacing: 12
         anchors.margins: 16
         anchors.fill: parent
@@ -39,15 +39,13 @@ ApplicationWindow {
                     console.log("Failed to get 2d context");
                     return;
                 }
-                ctx.fillStyle = "grey"; // Устанавливаем цвет заливки на серый
-                ctx.fillRect(0, 0, width, height); // Заливаем весь холст серым цветом
-
+                ctx.fillStyle = "grey";
+                ctx.fillRect(0, 0, width, height);
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 2;
                 var mazeData = Controller.getMazeData();
                 console.log("Maze Data:", JSON.stringify(mazeData, null, 2));  // Добавьте это для отладки
 
-                // Преобразуем одномерный массив в двумерный
                 var mazeData2D = [];
                 for (var i = 0; i < rows; i++) {
                     var row = [];
@@ -59,28 +57,27 @@ ApplicationWindow {
                 console.log("Maze Data 2D:", JSON.stringify(mazeData2D, null, 2));  // Добавьте это для отладки
 
                 if (mazeData2D && mazeData2D.length > 0 && mazeData2D[0] && mazeData2D[0].length > 0) {
-                    var cellSize = canvas.width / mazeData2D[0].length;
-                    console.log("Cell size:", cellSize);
-                    ctx.beginPath(); // Начинаем новый путь для всех стен
-
+                    var devider = (mazeData2D.length > mazeData2D[0].length) ? mazeData2D.length : mazeData2D[0].length;
+                    var cellSize = canvas.width / devider;
+                    // console.log("Devider size:", devider);
+                    // console.log("Cell size:", cellSize);
+                    ctx.beginPath();
                     for (var i = 0; i < mazeData2D.length; i++) {
                         for (var j = 0; j < mazeData2D[i].length; j++) {
                             var cell = mazeData2D[i][j];
                             var x = j * cellSize;
                             var y = i * cellSize;
                             if (cell.r_wall) {
-                                console.log("Drawing right wall at x:", x + cellSize, "y:", y);
                                 ctx.moveTo(x + cellSize, y);
                                 ctx.lineTo(x + cellSize, y + cellSize);
                             }
                             if (cell.b_wall) {
-                                console.log("Drawing bottom wall at x:", x, "y:", y + cellSize);
                                 ctx.moveTo(x, y + cellSize);
                                 ctx.lineTo(x + cellSize, y + cellSize);
                             }
                         }
                     }
-                    ctx.stroke(); // Завершаем путь и отрисовываем все стены
+                    ctx.stroke();
                 } else {
                     console.log("Maze data is empty or invalid");
                 }
@@ -101,7 +98,21 @@ ApplicationWindow {
                     text: "Save"
                     font.pixelSize: 18
                     onClicked: {
-                        Controller.saveMazeInFile();
+                        saveFile.open();
+                    }
+                }
+
+                FileDialog {
+                    id: saveFile
+                    title: "Save maze in file"
+                    fileMode: FileDialog.SaveFile
+                    nameFilters: ["Text files (*.txt)"]
+                    onAccepted: {
+                        var filePath = saveFile.file.toString();
+                        if (filePath.startsWith("file://")) {
+                            filePath = filePath.substring(7);
+                        }
+                        Controller.saveMazeInFile(filePath);
                     }
                 }
 
@@ -110,22 +121,25 @@ ApplicationWindow {
                     text: "Load"
                     font.pixelSize: 18
                     onClicked: {
-                        fileDialog.open();
+                        loadFile.open();
                     }
                 }
 
                 FileDialog {
-                    id: fileDialog
+                    id: loadFile
                     title: "Choose a file with maze"
+                    fileMode: FileDialog.OpenFile
                     defaultSuffix: "txt"
                     nameFilters: ["Text files (*.txt)"]
                     onAccepted: {
                         //TODO преобразовать строку в std::string и передать её в функцию
-                        var fileUrl = fileDialog.file.toString();
-                        var filePath = fileUrl.replace(/^(file:\/{3})|(qrc:\/{2})|(http:\/{2})/, "");
+                        var fileUrl = loadFile.file.toString();
+                        var filePath = fileUrl.replace(/^(file:\/{2})|(qrc:\/{2})|(http:\/{2})/, "");
                         var filePathString = filePath.toString();
+                        console.log("File Url:", fileUrl);  // Добавьте это для отладки
                         console.log("File Path String:", filePathString);  // Добавьте это для отладки
                         Controller.loadMazeFromFile(filePathString);
+                        rowCountSpinBox.value = Controller.printLabirinth();
                     }
                 }
             }
@@ -177,7 +191,7 @@ ApplicationWindow {
                 Layout.alignment: Qt.AlignHCenter
                 onClicked: {
                     Controller.generateMaze();
-                    // Controller.printLabirinth();
+                    Controller.printLabirinth();
                 }
             }
         }
