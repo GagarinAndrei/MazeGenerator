@@ -1,5 +1,5 @@
-#ifndef MODEL_MAZE_H_
-#define MODEL_MAZE_H_
+#ifndef MODEL_MODEL_H_
+#define MODEL_MODEL_H_
 #define MAX_MAZE_SIZE 50
 
 #include <string>
@@ -60,4 +60,4 @@ class Maze {
 };
 }  // namespace s21
 
-#endif  // MODEL_MAZE_H_
+#endif  // MODEL_MODEL_H_

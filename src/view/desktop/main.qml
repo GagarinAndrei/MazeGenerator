@@ -11,7 +11,7 @@ ApplicationWindow {
     title: qsTr("Maze")
 
     Connections {
-        target: Controller
+        target: View
         function onMazeDataChanged() {
             // console.log("Maze data changed");
             canvas.requestPaint();
@@ -43,8 +43,10 @@ ApplicationWindow {
                 ctx.fillRect(0, 0, width, height);
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 2;
-                var mazeData = Controller.getMazeData();
+                var mazeData = View.getMazeData();
                 console.log("Maze Data:", JSON.stringify(mazeData, null, 2));  // Добавьте это для отладки
+                // console.log("Maze Hight:", View.getHight);  // Добавьте это для отладки
+                // console.log("Maze Width:", mazeWidth);  // Добавьте это для отладки
 
                 var mazeData2D = [];
                 for (var i = 0; i < rows; i++) {
@@ -112,7 +114,7 @@ ApplicationWindow {
                         if (filePath.startsWith("file://")) {
                             filePath = filePath.substring(7);
                         }
-                        Controller.saveMazeInFile(filePath);
+                        View.saveMazeInFile(filePath);
                     }
                 }
 
@@ -138,8 +140,8 @@ ApplicationWindow {
                         var filePathString = filePath.toString();
                         console.log("File Url:", fileUrl);  // Добавьте это для отладки
                         console.log("File Path String:", filePathString);  // Добавьте это для отладки
-                        Controller.loadMazeFromFile(filePathString);
-                        rowCountSpinBox.value = Controller.printLabirinth();
+                        View.loadMazeFromFile(filePathString);
+                        rowCountSpinBox.value = View.printLabirinth();
                     }
                 }
             }
@@ -161,7 +163,7 @@ ApplicationWindow {
                     from: 0
                     to: 50
                     onValueChanged: {
-                        Controller.mazeHeight = value;
+                        View.mazeHeight = value;
                     }
                 }
             }
@@ -178,7 +180,7 @@ ApplicationWindow {
                     from: 0
                     to: 50
                     onValueChanged: {
-                        Controller.mazeWidth = value;
+                        View.mazeWidth = value;
                     }
                 }
             }
@@ -190,8 +192,8 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
                 onClicked: {
-                    Controller.generateMaze();
-                    Controller.printLabirinth();
+                    View.generateMaze();
+                    View.printLabirinth();
                 }
             }
         }

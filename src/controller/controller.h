@@ -1,59 +1,49 @@
 #ifndef CONTROLLER_CONTROLLER_H_
 #define CONTROLLER_CONTROLLER_H_
 
-#include <qvariant.h>
-
-#include "../model/maze.h"
-#include "qobject.h"
+#include "../model/model.h"
 // #include "qtmetamacros.h"
 
 namespace s21 {
 
-class Controller : public QObject {
-  Q_OBJECT
+class Controller {
 
-  Q_PROPERTY(QVariant mazeData READ getMazeData NOTIFY mazeDataChanged)
-  Q_PROPERTY(
-      int mazeHeight READ getHeight WRITE setHeight NOTIFY mazeHeightChanged)
-  Q_PROPERTY(
-      int mazeWidth READ getWidth WRITE setWidth NOTIFY mazeHeightChanged)
- public:
-  explicit Controller(Maze &maze, QObject *parent = nullptr)
-      : QObject{parent}, maze_{maze} {}
+public:
+  explicit Controller(Maze &maze) : maze_{maze} {}
   ~Controller() {}
 
   inline Maze &getMaze() { return this->maze_; }
-
-  Q_INVOKABLE QVariant getMazeData() const;
   inline int getHeight() { return this->maze_.getHeight(); }
   inline int getWidth() { return this->maze_.getWidth(); }
   inline void setHeight(int height) {
     this->maze_.setHeight(height);
-    emit mazeHeightChanged();
+    // emit mazeHeightChanged();
   }
   inline void setWidth(int width) {
     this->maze_.setWidth(width);
-    emit mazeWidthChanged();
+    // emit mazeWidthChanged();
   }
+  inline void saveMazeInFile(const std::string &filePath) {
+    this->maze_.saveMazeInFile(filePath);
+  };
+  inline void loadMazeFromFile(const std::string &filePath) {
+    this->maze_.loadMazeFromFile(filePath);
+  };
+  inline void generateMaze() { this->maze_.generate(); };
+  // Q_INVOKABLE void printLabirinth(); // for debug
 
-  Q_INVOKABLE void generateMaze();
-  // Q_INVOKABLE void saveMazeInFile(const std::string &filename);
-  // Q_INVOKABLE void loadMazeFromFile(const std::string &filename);
+  // signals:
+  //   void mazeDataChanged();
+  //   void mazeHeightChanged();
+  //   void mazeWidthChanged();
 
-  Q_INVOKABLE void printLabirinth();  // for debug
+  // public slots:
+  // void saveMazeInFile(const QString &filePath);
+  //   void loadMazeFromFile(const QString &filePath);
 
- signals:
-  void mazeDataChanged();
-  void mazeHeightChanged();
-  void mazeWidthChanged();
-
- public slots:
-  void saveMazeInFile(const QString &filePath);
-  void loadMazeFromFile(const QString &filePath);
-
- private:
+private:
   Maze &maze_;
 };
-}  // namespace s21
+} // namespace s21
 
-#endif  // CONTROLLER_CONTROLLER_H_
+#endif // CONTROLLER_CONTROLLER_H_

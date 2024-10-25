@@ -1,4 +1,4 @@
-#include "maze.h"
+#include "model.h"
 
 #include <sys/types.h>
 
