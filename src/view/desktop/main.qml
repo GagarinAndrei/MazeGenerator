@@ -41,12 +41,17 @@ ApplicationWindow {
                 }
                 ctx.fillStyle = "grey";
                 ctx.fillRect(0, 0, width, height);
+                ctx.clearRect(0, 0, width, height);
+
+
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 2;
                 var mazeData = View.getMazeData();
-                console.log("Maze Data:", JSON.stringify(mazeData, null, 2));  // Добавьте это для отладки
+                // console.log("Maze Data:", JSON.stringify(mazeData, null, 2));  // Добавьте это для отладки
                 // console.log("Maze Hight:", View.getHight);  // Добавьте это для отладки
                 // console.log("Maze Width:", mazeWidth);  // Добавьте это для отладки
+                rows = rowCountSpinBox.value;
+                cols = colCountSpinBox.value;
 
                 var mazeData2D = [];
                 for (var i = 0; i < rows; i++) {
@@ -56,7 +61,7 @@ ApplicationWindow {
                     }
                     mazeData2D.push(row);
                 }
-                console.log("Maze Data 2D:", JSON.stringify(mazeData2D, null, 2));  // Добавьте это для отладки
+                // console.log("Maze Data 2D:", JSON.stringify(mazeData2D, null, 2));  // Добавьте это для отладки
 
                 if (mazeData2D && mazeData2D.length > 0 && mazeData2D[0] && mazeData2D[0].length > 0) {
                     var devider = (mazeData2D.length > mazeData2D[0].length) ? mazeData2D.length : mazeData2D[0].length;
@@ -134,14 +139,17 @@ ApplicationWindow {
                     defaultSuffix: "txt"
                     nameFilters: ["Text files (*.txt)"]
                     onAccepted: {
-                        //TODO преобразовать строку в std::string и передать её в функцию
                         var fileUrl = loadFile.file.toString();
                         var filePath = fileUrl.replace(/^(file:\/{2})|(qrc:\/{2})|(http:\/{2})/, "");
                         var filePathString = filePath.toString();
                         console.log("File Url:", fileUrl);  // Добавьте это для отладки
                         console.log("File Path String:", filePathString);  // Добавьте это для отладки
                         View.loadMazeFromFile(filePathString);
-                        rowCountSpinBox.value = View.printLabirinth();
+                        rowCountSpinBox.value = View.getHeight();
+                        colCountSpinBox.value = View.getWidth();
+                        View.printLabirinth(); // Добавьте это для отладки
+                        console.log("Hight: ", View.getHeight()); // Добавьте это для отладки
+                        console.log("Width: ", View.getWidth()); // Добавьте это для отладки
                     }
                 }
             }
@@ -160,7 +168,8 @@ ApplicationWindow {
                     id: rowCountSpinBox
                     Layout.alignment: Qt.AlignRight
                     Layout.fillWidth: true
-                    from: 0
+                    editable: true
+                    from: 1
                     to: 50
                     onValueChanged: {
                         View.mazeHeight = value;
@@ -177,7 +186,8 @@ ApplicationWindow {
                     id: colCountSpinBox
                     Layout.alignment: Qt.AlignRight
                     Layout.fillWidth: true
-                    from: 0
+                    editable: true
+                    from: 1
                     to: 50
                     onValueChanged: {
                         View.mazeWidth = value;

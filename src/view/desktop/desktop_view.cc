@@ -15,15 +15,12 @@ void DesktopView::saveMazeInFile(const QString &filePath) {
 void DesktopView::loadMazeFromFile(const QString &filePath) {
   std::string filePathStd = filePath.toStdString();
   this->controller_.loadMazeFromFile(filePathStd);
-
-  
   emit this->mazeDataChanged();
 }
 
 QVariant DesktopView::getMazeData() const {
   QVariantList mazeData;
   auto maze = controller_.getMaze().getMaze();
-  // qDebug() << "Maze size:" << maze.size(); // for debug
   for (const auto &row : maze) {
     QVariantList rowData;
     for (const auto &cell : row) {
@@ -34,7 +31,6 @@ QVariant DesktopView::getMazeData() const {
     }
     mazeData.append(rowData);
   }
-  // qDebug() << "Maze Data:" << mazeData; // for debug
   return mazeData;
 }
 
@@ -64,4 +60,4 @@ void DesktopView::printLabirinth() {
   }
 }
 
-} // namespace s21
+}  // namespace s21

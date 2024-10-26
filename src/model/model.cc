@@ -207,19 +207,4 @@ void Maze::unionSets(std::vector<Cell> &line, Cell current, Cell next) {
     }
   }
 }
-
-// void Maze::printSets() {
-//   std::cout << std::endl;
-//   std::cout << "-= SETS =-" << std::endl;
-//   std::cout << std::endl;
-//   for (size_t i = 0; i < this->maze_.size(); i++) {
-//     for (size_t j = 0; j < this->maze_[0].size(); j++) {
-//       std::cout << std::setw(3) << std::setfill('0') << maze_[i][j].set << "
-//       ";
-//     }
-//     std::cout << std::endl;
-//     std::cout << std::endl;
-//   }
-// }
-
 }  // namespace s21
