@@ -1,65 +1,65 @@
-#ifndef MODEL_MAZE_H_
-#define MODEL_MAZE_H_
-#define MAX_MAZE_SIZE 50
+// #ifndef MODEL_MAZE_H_
+// #define MODEL_MAZE_H_
+// #define MAX_MAZE_SIZE 50
 
-#include <string>
-#include <vector>
+// #include <string>
+// #include <vector>
 
-namespace s21 {
+// namespace s21 {
 
-class Maze {
- public:
-  typedef struct Cell {
-    bool r_wall = false;
-    bool b_wall = false;
-    int set = 0;
-  } Cell;
-  using Matrix = std::vector<std::vector<Cell>>;
+// class Maze {
+//  public:
+//   typedef struct Cell {
+//     bool r_wall = false;
+//     bool b_wall = false;
+//     int set = 0;
+//   } Cell;
+//   using Matrix = std::vector<std::vector<Cell>>;
 
-  Maze() {};
-  ~Maze() = default;
+//   Maze() {};
+//   ~Maze() = default;
 
-  void generate();
-  void saveMazeInFile(const std::string &filename);
-  void loadMazeFromFile(const std::string &filename);
+//   void generate();
+//   void saveMazeInFile(const std::string &filename);
+//   void loadMazeFromFile(const std::string &filename);
 
-  void setSize(int rows, int cols) {
-    this->rows_ = rows;
-    this->cols_ = cols;
-  };
+//   void setSize(int rows, int cols) {
+//     this->rows_ = rows;
+//     this->cols_ = cols;
+//   };
 
-  inline int getHeight() { return rows_; }
-  inline int getWidth() { return cols_; }
-  inline void setHeight(int height) { this->rows_ = height; };
-  inline void setWidth(int width) { this->cols_ = width; };
-  inline Matrix &getMaze() { return this->maze_; };
-  inline Cell getCell(int i, int j) { return maze_[i][j]; }
+//   inline int getHeight() { return rows_; }
+//   inline int getWidth() { return cols_; }
+//   inline void setHeight(int height) { this->rows_ = height; };
+//   inline void setWidth(int width) { this->cols_ = width; };
+//   inline Matrix &getMaze() { return this->maze_; };
+//   inline Cell getCell(int i, int j) { return maze_[i][j]; }
 
- private:
-  void generateFirstLine();
-  void generateOtherLines();
-  void generateLastLine();
-  void findPath(const Cell &start, const Cell &end, int x, int y);
+//  private:
+//   void generateFirstLine();
+//   void generateOtherLines();
+//   void generateLastLine();
+//   void findPath(const Cell &start, const Cell &end, int x, int y);
 
-  void cleanMaze();
+//   void cleanMaze();
 
-  void assignUniqueSetToCells(std::vector<Cell> &line);
+//   void assignUniqueSetToCells(std::vector<Cell> &line);
 
-  void setRightWall(std::vector<Cell> &line);
-  void setBottomWall(std::vector<Cell> &line);
+//   void setRightWall(std::vector<Cell> &line);
+//   void setBottomWall(std::vector<Cell> &line);
 
-  int countCellInSet(std::vector<Cell> &line, int set);
-  int countOfSetsWithoutBottomWall(std::vector<Cell> &line, int set);
+//   int countCellInSet(std::vector<Cell> &line, int set);
+//   int countOfSetsWithoutBottomWall(std::vector<Cell> &line, int set);
 
-  bool trueOrFalseGenerator();
-  void unionSets(std::vector<Cell> &line, Cell current, Cell next);
+//   bool trueOrFalseGenerator();
+//   void unionSets(std::vector<Cell> &line, Cell current, Cell next);
 
-  int rows_;
-  int cols_;
-  int count_ = 1;
+//   int rows_;
+//   int cols_;
+//   int count_ = 1;
 
-  Matrix maze_;
-};
-}  // namespace s21
+//   Matrix maze_;
+// };
+// }  // namespace s21
 
-#endif  // MODEL_MAZE_H_
+// #endif  // MODEL_MAZE_H_

@@ -20,8 +20,10 @@ class DesktopView : public QObject {
 
  public:
   DesktopView(Controller &controller, QObject *parent = nullptr)
-      : QObject{parent}, controller_{controller}, mazeHeight_{}, mazeWidth_{} {
-        };
+      : QObject{parent},
+        controller_{controller},
+        mazeHeight_{},
+        mazeWidth_{} {};
   ~DesktopView() = default;
 
   Q_INVOKABLE QVariant getMazeData() const;

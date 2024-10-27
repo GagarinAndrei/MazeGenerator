@@ -19,7 +19,12 @@ void Maze::generate() {
 
   generateFirstLine();
   for (int i = 1; i < rows_ - 1; i++) {
+    int x = 0;
     generateOtherLines();
+    for (Cell &cell : maze_[i]) {
+      cell.x = x++;
+      cell.y = i;
+    }
   }
   generateLastLine();
 }
@@ -86,6 +91,10 @@ void Maze::generateFirstLine() {
   this->assignUniqueSetToCells(line);
   this->setRightWall(line);
   this->setBottomWall(line);
+  int x = 0;
+  for (Cell &cell : line) {
+    cell.x = x++;
+  }
   this->maze_.push_back(line);
 }
 
@@ -108,6 +117,7 @@ void Maze::generateOtherLines() {
 
 void Maze::generateLastLine() {
   std::vector<Cell> line(this->maze_.back());
+  int x = 0;
 
   for (Cell &cell : line) {
     cell.r_wall = false;
@@ -126,6 +136,8 @@ void Maze::generateLastLine() {
     }
     unionSets(line, line[i], line[i + 1]);
     line[i].b_wall = true;
+    line[i].x = x++;
+    line[i].y = this->rows_ - 1;
   }
   line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
                               // классно

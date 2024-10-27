@@ -14,7 +14,8 @@ class PathFinder {
  private:
   const Maze &maze_;
   std::vector<Maze::Cell> path_;
+
+  bool isColision(const Maze::Cell &current, const Maze::Cell &next);
 };
 }  // namespace s21
-
 #endif  // MODEL_PATH_FINDER_H_

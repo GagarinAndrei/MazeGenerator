@@ -11,11 +11,13 @@ class Maze {
   typedef struct Cell {
     bool r_wall = false;
     bool b_wall = false;
+    int x = 0;
+    int y = 0;
     int set = 0;
   } Cell;
   using Matrix = std::vector<std::vector<Cell>>;
 
-  Maze() {};
+  Maze(){};
   ~Maze() = default;
 
   void generate();
