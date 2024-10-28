@@ -2,7 +2,7 @@
 
 namespace s21 {
 
-bool PathFinder::isColision(const Maze::Cell &current, const Maze::Cell &next) {
+bool PathFinder::isCollision(const Maze::Cell &current, const Maze::Cell &next) {
   bool is_collision = false;
   if (current.y > next.y) {  // шаг вниз
     if (current.b_wall == true) {
