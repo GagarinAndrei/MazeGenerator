@@ -7,14 +7,30 @@
 namespace s21 {
 
 class Maze {
- public:
+public:
+  typedef struct Position {
+    int x;
+    int y;
+
+    bool operator==(const Position &other) const {
+      return this->x == other.x && this->y == other.y;
+    }
+
+  } Position;
+
+  struct PositionHash {
+    std::size_t operator()(const Position &position) const {
+      return std::hash<int>()(position.x) ^ (std::hash<int>()(position.y) << 1);
+    }
+  };
+
   typedef struct Cell {
     bool r_wall = false;
     bool b_wall = false;
-    int x = 0;
-    int y = 0;
     int set = 0;
+    Position position;
   } Cell;
+
   using Matrix = std::vector<std::vector<Cell>>;
 
   Maze(){};
@@ -36,11 +52,19 @@ class Maze {
   inline Matrix &getMaze() { return this->maze_; };
   inline Cell getCell(int i, int j) { return maze_[i][j]; }
 
- private:
+  // TODO: Потом перенети эти функции в класс PathFinder
+  inline std::vector<Position> &getPath() { return this->path_; };
+  std::vector<Position> getNeighbors(const Matrix &maze, Position &position);
+  void findPath(const Matrix &maze, const Position &start,
+                const Position &target);
+  bool isTargetReached(const Position &current, const Position &target);
+  bool isThereParent(const Position &current);
+  // Потом перенети эти функции в класс PathFinder
+
+private:
   void generateFirstLine();
   void generateOtherLines();
   void generateLastLine();
-  void findPath(const Cell &start, const Cell &end, int x, int y);
 
   void cleanMaze();
 
@@ -60,7 +84,8 @@ class Maze {
   int count_ = 1;
 
   Matrix maze_;
+  std::vector<Position> path_;
 };
-}  // namespace s21
+} // namespace s21
 
-#endif  // MODEL_MODEL_H_
+#endif // MODEL_MODEL_H_

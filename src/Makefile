@@ -13,6 +13,7 @@ DIST_DIR :=archive
 SOURCES := model/*.cc
 CONTROLLER := controller/*.cc
 CLI_VIEW := view/cli/*.cc
+TEST := tests/*.cc
 
 ifeq ($(shell uname), Linux)
 	TEST_FLAGS := -lcheck -lgtest -lm -lpthread -lrt -lsubunit
@@ -39,6 +40,10 @@ run:
 
 cli:
 	$(CC) -g ${SOURCES} ${CONTROLLER} ${CLI_VIEW} ${CFLAGS} ${LIBRARIES} -o ${TARGET}_exe
+
+test: clean
+	${CC} -g ${SOURCES} ${TEST} ${TEST_FLAGS} ${LIBRARIES} -o ${TARGET}_test
+	./${TARGET}_test
 
 gcov_report: clean
 	@mkdir -p report
