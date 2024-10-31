@@ -1,9 +1,11 @@
 #include "path_finder.h"
-#include "model.h"
+
 #include <queue>
 #include <unordered_map>
 #include <valarray>
 #include <vector>
+
+#include "model.h"
 
 namespace s21 {
 
@@ -29,4 +31,4 @@ namespace s21 {
 //   }
 //   return is_collision;
 // }
-} // namespace s21
+}  // namespace s21

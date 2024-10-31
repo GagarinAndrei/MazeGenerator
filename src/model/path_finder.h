@@ -7,17 +7,15 @@
 
 namespace s21 {
 class PathFinder {
-public:
-  explicit PathFinder(const Maze &maze) : maze_{maze} {
-  };
+ public:
+  explicit PathFinder(const Maze &maze) : maze_{maze} {};
   ~PathFinder() = default;
-  
 
-private:
+ private:
   // bool isCollision(const Maze::Cell &current, const Maze::Cell &next);
 
   std::vector<std::vector<Maze::Cell>> neighbours_;
   const Maze &maze_;
 };
-} // namespace s21
-#endif // MODEL_PATH_FINDER_H_
+}  // namespace s21
+#endif  // MODEL_PATH_FINDER_H_

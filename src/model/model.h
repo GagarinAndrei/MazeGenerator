@@ -7,15 +7,14 @@
 namespace s21 {
 
 class Maze {
-public:
+ public:
   typedef struct Position {
     int x;
     int y;
-
     bool operator==(const Position &other) const {
       return this->x == other.x && this->y == other.y;
     }
-
+    bool operator!=(const Position &other) const { return !(*this == other); }
   } Position;
 
   struct PositionHash {
@@ -33,7 +32,7 @@ public:
 
   using Matrix = std::vector<std::vector<Cell>>;
 
-  Maze(){};
+  Maze() {};
   ~Maze() = default;
 
   void generate();
@@ -54,19 +53,20 @@ public:
 
   // TODO: Потом перенети эти функции в класс PathFinder
   inline std::vector<Position> &getPath() { return this->path_; };
-  std::vector<Position> getNeighbors(const Matrix &maze, Position &position);
-  void findPath(const Matrix &maze, const Position &start,
-                const Position &target);
+  std::vector<Position> getNeighbors(const Position &pos);
+  void findPath(const Position &start, const Position &target);
   bool isTargetReached(const Position &current, const Position &target);
   bool isThereParent(const Position &current);
   // Потом перенети эти функции в класс PathFinder
 
-private:
+ private:
   void generateFirstLine();
   void generateOtherLines();
   void generateLastLine();
 
   void cleanMaze();
+  void cleanPath();
+
 
   void assignUniqueSetToCells(std::vector<Cell> &line);
 
@@ -86,6 +86,6 @@ private:
   Matrix maze_;
   std::vector<Position> path_;
 };
-} // namespace s21
+}  // namespace s21
 
-#endif // MODEL_MODEL_H_
+#endif  // MODEL_MODEL_H_

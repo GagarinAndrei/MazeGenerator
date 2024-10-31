@@ -20,19 +20,22 @@ class DesktopView : public QObject {
 
  public:
   DesktopView(Controller &controller, QObject *parent = nullptr)
-      : QObject{parent},
-        controller_{controller},
-        mazeHeight_{},
-        mazeWidth_{} {};
+      : QObject{parent}, controller_{controller}, mazeHeight_{}, mazeWidth_{} {
+        };
   ~DesktopView() = default;
 
   Q_INVOKABLE QVariant getMazeData() const;
   Q_INVOKABLE void generateMaze();
+  Q_INVOKABLE void findPath(const QVariant &start, const QVariant &target);
   Q_INVOKABLE void printLabirinth();  // for debug
 
   inline Maze &getMaze() { return this->controller_.getMaze(); }
+  // Q_INVOKABLE QVariantList getPath() const;
+  Q_INVOKABLE QVariantList vectorToVariantList();
+
   Q_INVOKABLE int getHeight() { return this->controller_.getHeight(); }
   Q_INVOKABLE int getWidth() { return this->controller_.getWidth(); }
+
   inline void setHeight(int height) {
     this->controller_.setHeight(height);
     this->mazeHeight_ = height;

@@ -1,10 +1,55 @@
 #include "desktop_view.h"
 
+#include <qvariant.h>
+
+#include <vector>
+
 namespace s21 {
 void DesktopView::generateMaze() {
   controller_.generateMaze();
   emit this->mazeDataChanged();
 }
+
+void DesktopView::findPath(const QVariant &start, const QVariant &target) {
+  Maze::Position startPos = start.value<Maze::Position>();
+  Maze::Position targetPos = target.value<Maze::Position>();
+
+  controller_.findPath(startPos, targetPos);
+  emit this->mazeDataChanged();
+}
+
+// Функция для преобразования Position в QVariantMap
+QVariantMap positionToVariantMap(const Maze::Position &pos) {
+  QVariantMap variantMap;
+  variantMap["x"] = pos.x;
+  variantMap["y"] = pos.y;
+  return variantMap;
+}
+
+// Функция для преобразования std::vector<Position> в QVariantList
+QVariantList DesktopView::vectorToVariantList() {
+  QVariantList variantList;
+  const std::vector<Maze::Position>& vec = controller_.getMaze().getPath();
+  std::transform(
+      vec.begin(), vec.end(), std::back_inserter(variantList),
+      [](const Maze::Position &pos) { return positionToVariantMap(pos); });
+  return variantList;
+}
+
+// QVariantList DesktopView::getPath() const {
+//     QVariantList path;
+//     const std::vector<Maze::Position>& mazePath =
+//     controller_.getMaze().getPath(); for (const auto& pos : mazePath) {
+//         path.append(QVariant::fromValue(pos));
+//     }
+//         qDebug() << "getPath:" << path;  // Добавьте это для отладки
+//         std::vector<Maze::Position> &path_test =
+//         controller_.getMaze().getPath(); for (auto item : path_test) {
+//         qDebug() << "path_: x = " << item.x << " - y = " << item.y ;  //
+//         Добавьте это для отладки
+//         }
+//     return path;
+// }
 
 void DesktopView::saveMazeInFile(const QString &filePath) {
   std::string filePathStd = filePath.toStdString();

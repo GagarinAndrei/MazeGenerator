@@ -12,7 +12,8 @@ ApplicationWindow {
 
     Connections {
         target: View
-        function onMazeDataChanged() {
+        function onMazeDataChanged()
+        {
             // console.log("Maze data changed");
             canvas.requestPaint();
         }
@@ -30,8 +31,10 @@ ApplicationWindow {
             height: 500
             Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
 
-            property int rows: rowCountSpinBox.value
-            property int cols: colCountSpinBox.value
+            property int rows: rowCountSpinBox.value;
+            property int cols: colCountSpinBox.value;
+            property var startPoint: null;
+            property var endPoint: null;
 
             onPaint: {
                 var ctx = getContext("2d");
@@ -42,32 +45,25 @@ ApplicationWindow {
                 ctx.fillStyle = "grey";
                 ctx.fillRect(0, 0, width, height);
                 ctx.clearRect(0, 0, width, height);
-
-
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 2;
                 var mazeData = View.getMazeData();
-                // console.log("Maze Data:", JSON.stringify(mazeData, null, 2));  // Добавьте это для отладки
-                // console.log("Maze Hight:", View.getHight);  // Добавьте это для отладки
-                // console.log("Maze Width:", mazeWidth);  // Добавьте это для отладки
                 rows = rowCountSpinBox.value;
                 cols = colCountSpinBox.value;
 
                 var mazeData2D = [];
                 for (var i = 0; i < rows; i++) {
-                    var row = [];
-                    for (var j = 0; j < cols; j++) {
-                        row.push(mazeData[i * cols + j]);
-                    }
-                    mazeData2D.push(row);
+                   var row = [];
+                   for (var j = 0; j < cols; j++) {
+                       row.push(mazeData[i * cols + j]);
+                   }
+                   mazeData2D.push(row);
                 }
                 // console.log("Maze Data 2D:", JSON.stringify(mazeData2D, null, 2));  // Добавьте это для отладки
 
                 if (mazeData2D && mazeData2D.length > 0 && mazeData2D[0] && mazeData2D[0].length > 0) {
                     var devider = (mazeData2D.length > mazeData2D[0].length) ? mazeData2D.length : mazeData2D[0].length;
                     var cellSize = canvas.width / devider;
-                    // console.log("Devider size:", devider);
-                    // console.log("Cell size:", cellSize);
                     ctx.beginPath();
                     for (var i = 0; i < mazeData2D.length; i++) {
                         for (var j = 0; j < mazeData2D[i].length; j++) {
@@ -75,8 +71,8 @@ ApplicationWindow {
                             var x = j * cellSize;
                             var y = i * cellSize;
                             if (cell.r_wall) {
-                                ctx.moveTo(x + cellSize, y);
-                                ctx.lineTo(x + cellSize, y + cellSize);
+                               ctx.moveTo(x + cellSize, y);
+                               ctx.lineTo(x + cellSize, y + cellSize);
                             }
                             if (cell.b_wall) {
                                 ctx.moveTo(x, y + cellSize);
@@ -85,127 +81,184 @@ ApplicationWindow {
                         }
                     }
                     ctx.stroke();
-                } else {
-                    console.log("Maze data is empty or invalid");
+                    // Отрисовка начальной и конечной точки
+                    if (startPoint) {
+                        ctx.fillStyle = "green";
+                        ctx.fillRect(startPoint.x * cellSize, startPoint.y * cellSize, cellSize, cellSize);
+                    }
+                    if (endPoint) {
+                        ctx.fillStyle = "red";
+                        ctx.fillRect(endPoint.x * cellSize, endPoint.y * cellSize, cellSize, cellSize);
+                    }
+                    // Отрисовка пути
+                    var path = View.vectorToVariantList();
+                    console.log("Path:", JSON.stringify(path));  // Добавьте это для отладки
+                    if (path.length > 0) {
+                        ctx.strokeStyle = "blue";
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        var start = path[0];
+                        var startX = start.x * cellSize + cellSize / 2;
+                        var startY = start.y * cellSize + cellSize / 2;
+                        ctx.moveTo(startX, startY);
+                        for (var i = 1; i < path.length; i++) {
+                            var pos = path[i];
+                            var x = pos.x * cellSize + cellSize / 2;
+                            var y = pos.y * cellSize + cellSize / 2;
+                            ctx.lineTo(x, y);
+                        }
+                        ctx.stroke();
+                    }
+
                 }
             }
-        }
 
-        ColumnLayout {
-            spacing: 12
-            Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    var cellSize = canvas.width / canvas.rows;
+                    var x = Math.floor(mouse.x / cellSize);
+                    var y = Math.floor(mouse.y / cellSize);
+                    if (!canvas.startPoint) {
+                        canvas.startPoint = {x: x, y: y};
+                    } else if (!canvas.endPoint) {
+                        canvas.endPoint = {x: x, y: y};
+                        } else {
+                            canvas.startPoint = null;
+                            canvas.endPoint = null;
+                        }
+                        canvas.requestPaint();
+                    }
+                }
+            }
 
-            RowLayout {
-                id: buttonRow
+            ColumnLayout {
                 spacing: 12
                 Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
 
-                Button {
-                    id: saveButton
-                    text: "Save"
-                    font.pixelSize: 18
-                    onClicked: {
-                        saveFile.open();
-                    }
-                }
+                RowLayout {
+                    id: buttonRow
+                    spacing: 12
+                    Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
 
-                FileDialog {
-                    id: saveFile
-                    title: "Save maze in file"
-                    fileMode: FileDialog.SaveFile
-                    nameFilters: ["Text files (*.txt)"]
-                    onAccepted: {
-                        var filePath = saveFile.file.toString();
-                        if (filePath.startsWith("file://")) {
-                            filePath = filePath.substring(7);
+                    Button {
+                        id: saveButton
+                        text: "Save"
+                        font.pixelSize: 18
+                        onClicked: {
+                            saveFile.open();
                         }
-                        View.saveMazeInFile(filePath);
+                    }
+
+                    FileDialog {
+                        id: saveFile
+                        title: "Save maze in file"
+                        fileMode: FileDialog.SaveFile
+                        nameFilters: ["Text files (*.txt)"]
+                        onAccepted: {
+                            var filePath = saveFile.file.toString();
+                            if (filePath.startsWith("file://"))
+                            {
+                                filePath = filePath.substring(7);
+                            }
+                            View.saveMazeInFile(filePath);
+                        }
+                    }
+
+                    Button {
+                        id: loadButton
+                        text: "Load"
+                        font.pixelSize: 18
+                        onClicked: {
+                            loadFile.open();
+                        }
+                    }
+
+                    FileDialog {
+                        id: loadFile
+                        title: "Choose a file with maze"
+                        fileMode: FileDialog.OpenFile
+                        defaultSuffix: "txt"
+                        nameFilters: ["Text files (*.txt)"]
+                        onAccepted: {
+                            var fileUrl = loadFile.file.toString();
+                            var filePath = fileUrl.replace(/^(file:\/{2})|(qrc:\/{2})|(http:\/{2})/, "");
+                            var filePathString = filePath.toString();
+                            console.log("File Url:", fileUrl);  // Добавьте это для отладки
+                            console.log("File Path String:", filePathString);  // Добавьте это для отладки
+                            View.loadMazeFromFile(filePathString);
+                            rowCountSpinBox.value = View.getHeight();
+                            colCountSpinBox.value = View.getWidth();
+                            View.printLabirinth(); // Добавьте это для отладки
+                            console.log("Hight: ", View.getHeight()); // Добавьте это для отладки
+                            console.log("Width: ", View.getWidth()); // Добавьте это для отладки
+                        }
+                    }
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+                    text: "Generation settings:"
+                }
+
+                RowLayout {
+                    Text {
+                        text: "Maze rows:"
+                        Layout.preferredWidth: 80
+                    }
+                    SpinBox {
+                        id: rowCountSpinBox
+                        Layout.alignment: Qt.AlignRight
+                        Layout.fillWidth: true
+                        editable: true
+                        from: 1
+                        to: 50
+                        onValueChanged: {
+                            View.mazeHeight = value;
+                        }
+                    }
+                }
+
+                RowLayout {
+                    Text {
+                        text: "Maze cols:"
+                        Layout.preferredWidth: 80
+                    }
+                    SpinBox {
+                        id: colCountSpinBox
+                        Layout.alignment: Qt.AlignRight
+                        Layout.fillWidth: true
+                        editable: true
+                        from: 1
+                        to: 50
+                        onValueChanged: {
+                            View.mazeWidth = value;
+                        }
                     }
                 }
 
                 Button {
-                    id: loadButton
-                    text: "Load"
+                    id: generateButton
+                    text: "Generate"
                     font.pixelSize: 18
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignHCenter
                     onClicked: {
-                        loadFile.open();
+                        View.generateMaze();
+                        View.printLabirinth();
                     }
                 }
 
-                FileDialog {
-                    id: loadFile
-                    title: "Choose a file with maze"
-                    fileMode: FileDialog.OpenFile
-                    defaultSuffix: "txt"
-                    nameFilters: ["Text files (*.txt)"]
-                    onAccepted: {
-                        var fileUrl = loadFile.file.toString();
-                        var filePath = fileUrl.replace(/^(file:\/{2})|(qrc:\/{2})|(http:\/{2})/, "");
-                        var filePathString = filePath.toString();
-                        console.log("File Url:", fileUrl);  // Добавьте это для отладки
-                        console.log("File Path String:", filePathString);  // Добавьте это для отладки
-                        View.loadMazeFromFile(filePathString);
-                        rowCountSpinBox.value = View.getHeight();
-                        colCountSpinBox.value = View.getWidth();
-                        View.printLabirinth(); // Добавьте это для отладки
-                        console.log("Hight: ", View.getHeight()); // Добавьте это для отладки
-                        console.log("Width: ", View.getWidth()); // Добавьте это для отладки
-                    }
-                }
-            }
-
-            Text {
-                Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
-                text: "Generation settings:"
-            }
-
-            RowLayout {
-                Text {
-                    text: "Maze rows:"
-                    Layout.preferredWidth: 80
-                }
-                SpinBox {
-                    id: rowCountSpinBox
-                    Layout.alignment: Qt.AlignRight
+                Button {
+                    id: findWayButton
+                    text: "Find Path"
+                    font.pixelSize: 18
                     Layout.fillWidth: true
-                    editable: true
-                    from: 1
-                    to: 50
-                    onValueChanged: {
-                        View.mazeHeight = value;
+                    Layout.alignment: Qt.AlignHCenter
+                    onClicked: {
+                        View.findPath(canvas.startPoint, canvas.endPoint);
                     }
-                }
-            }
-
-            RowLayout {
-                Text {
-                    text: "Maze cols:"
-                    Layout.preferredWidth: 80
-                }
-                SpinBox {
-                    id: colCountSpinBox
-                    Layout.alignment: Qt.AlignRight
-                    Layout.fillWidth: true
-                    editable: true
-                    from: 1
-                    to: 50
-                    onValueChanged: {
-                        View.mazeWidth = value;
-                    }
-                }
-            }
-
-            Button {
-                id: generateButton
-                text: "Generate"
-                font.pixelSize: 18
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
-                onClicked: {
-                    View.generateMaze();
-                    View.printLabirinth();
                 }
             }
         }
     }
-}

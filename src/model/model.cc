@@ -1,11 +1,12 @@
 #include "model.h"
 
+#include <sys/types.h>
+
 #include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <queue>
 #include <random>
-#include <sys/types.h>
 #include <unordered_map>
 #include <vector>
 
@@ -141,8 +142,8 @@ void Maze::generateLastLine() {
     line[i].position.x = x++;
     line[i].position.y = this->rows_ - 1;
   }
-  line.back().r_wall = true; // не по алгоритму, но Рамиль сказал что так
-                             // классно
+  line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
+                              // классно
   this->maze_.push_back(line);
 }
 
@@ -151,6 +152,10 @@ void Maze::cleanMaze() {
     line.clear();
   }
   this->maze_.clear();
+}
+
+void Maze::cleanPath() {
+  this->path_.clear();
 }
 
 void Maze::assignUniqueSetToCells(std::vector<Cell> &line) {
@@ -173,8 +178,8 @@ void Maze::setRightWall(std::vector<Cell> &line) {
       line[i].r_wall = true;
     }
   }
-  line.back().r_wall = true; // не по алгоритму, но Рамиль сказал что так
-                             // классно
+  line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
+                              // классно
 }
 
 void Maze::setBottomWall(std::vector<Cell> &line) {
@@ -223,23 +228,26 @@ void Maze::unionSets(std::vector<Cell> &line, Cell current, Cell next) {
 }
 
 // 8=================================================================э
-std::vector<Maze::Position> Maze::getNeighbors(const Matrix &maze,
-                                               Position &position) {
+std::vector<Maze::Position> Maze::getNeighbors(const Position &pos) {
   std::vector<Position> neighbors;
-  int rows = maze.size();
-  int cols = maze[0].size();
+  int rows = maze_.size();
+  int cols = maze_[0].size();
 
-  if (position.y > 0 && position.y < rows - 1 && !maze[position.y][position.x].b_wall) {
-    neighbors.push_back({position.x, position.y + 1});
+  // Проверка соседа сверху
+  if (pos.y > 0 && !maze_[pos.y - 1][pos.x].b_wall) {
+    neighbors.push_back({pos.x, pos.y - 1});
   }
-  if (position.y > 0 && position.y < rows - 1 && !maze[position.y - 1][position.x].b_wall) {
-    neighbors.push_back({position.x, position.y - 1});
+  // Проверка соседа снизу
+  if (pos.y < rows - 1 && !maze_[pos.y][pos.x].b_wall) {
+    neighbors.push_back({pos.x, pos.y + 1});
   }
-  if (position.x > 0 && position.y < cols - 1 && !maze[position.y][position.x - 1].r_wall) {
-    neighbors.push_back({position.x - 1, position.y});
+  // Проверка соседа слева
+  if (pos.x > 0 && !maze_[pos.y][pos.x - 1].r_wall) {
+    neighbors.push_back({pos.x - 1, pos.y});
   }
-  if (position.x > 0 && position.y < cols - 1 && !maze[position.y][position.x].b_wall) {
-    neighbors.push_back({position.x + 1, position.y});
+  // Проверка соседа справа
+  if (pos.x < cols - 1 && !maze_[pos.y][pos.x].r_wall) {
+    neighbors.push_back({pos.x + 1, pos.y});
   }
 
   return neighbors;
@@ -253,8 +261,8 @@ bool Maze::isThereParent(const Position &current) {
   return current.x != -1 && current.y != -1;
 }
 
-void Maze::findPath(const Matrix &maze, const Position &start,
-                    const Position &target) {
+void Maze::findPath(const Position &start, const Position &target) {
+  this->cleanPath();
   std::queue<Position> frontier;
   frontier.push(start);
 
@@ -269,7 +277,7 @@ void Maze::findPath(const Matrix &maze, const Position &start,
       break;
     }
 
-    for (const Position &next : getNeighbors(maze, current)) {
+    for (const Position &next : getNeighbors(current)) {
       if (came_from.find(next) == came_from.end()) {
         frontier.push(next);
         came_from[next] = current;
@@ -278,11 +286,12 @@ void Maze::findPath(const Matrix &maze, const Position &start,
   }
   Position current = target;
 
-  while (!isThereParent(current)) {
+  while (current != start) {
     this->path_.push_back(current);
     current = came_from[current];
   }
+  this->path_.push_back(start);
 }
 // 8=================================================================э
 
-} // namespace s21
+}  // namespace s21

@@ -22,6 +22,10 @@ class Controller {
     this->maze_.loadMazeFromFile(filePath);
   };
   inline void generateMaze() { this->maze_.generate(); };
+  inline void findPath(const Maze::Position &start,
+                       const Maze::Position &target) {
+    this->maze_.findPath(start, target);
+  };
 
  private:
   Maze &maze_;
