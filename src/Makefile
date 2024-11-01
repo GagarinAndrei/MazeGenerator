@@ -35,6 +35,21 @@ install:
 	cd view/desktop && cmake -B build . && cmake --build build
 	cp view/desktop/build/${TARGET} .
 
+uninstall:
+	rm ${TARGET}
+
+dist:
+	mkdir -p ${DIST_DIR}
+	cp -rf model/ ${DIST_DIR}/model/
+	cp -rf view/ ${DIST_DIR}/view/
+	cp -rf controller/ ${DIST_DIR}/controller/
+	cp -rf Makefile ${DIST_DIR}/
+	tar -czvf ${DIST_DIR}.tar.gz ${DIST_DIR}
+	rm -rf ${DIST_DIR}
+
+dvi:
+	
+
 run:
 	./${TARGET}
 
