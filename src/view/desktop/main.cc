@@ -3,7 +3,6 @@
 #include <QQmlContext>
 
 #include "../../model/model.h"
-#include "../../model/path_finder.h"
 #include "desktop_view.h"
 
 int main(int argc, char *argv[]) {
@@ -14,7 +13,6 @@ int main(int argc, char *argv[]) {
   s21::Maze maze;
   s21::Controller controller(maze);
   s21::DesktopView view(controller);
-  s21::PathFinder path_finder(maze);
 
   engine.rootContext()->setContextProperty("View", &view);
 

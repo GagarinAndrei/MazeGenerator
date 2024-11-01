@@ -14,6 +14,7 @@ namespace s21 {
 
 void Maze::generate() {
   cleanMaze();
+  cleanPath();
   if (this->rows_ <= 0 || this->cols_ <= 0 || this->rows_ > MAX_MAZE_SIZE ||
       this->cols_ > 50) {
     throw std::out_of_range("Invalid maze size");
@@ -63,8 +64,9 @@ void Maze::loadMazeFromFile(const std::string &filename) {
   std::ifstream file(filename);
 
   if (!file.is_open()) {
-    std::cerr << "Failed to open file: " << filename << std::endl;
-    return;
+    // std::cerr << "Failed to open file: " << filename << std::endl;
+    // return;
+    throw std::runtime_error("Failed to open file");
   }
 
   file >> rows_ >> cols_;
@@ -142,8 +144,7 @@ void Maze::generateLastLine() {
     line[i].position.x = x++;
     line[i].position.y = this->rows_ - 1;
   }
-  line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
-                              // классно
+  line.back().r_wall = true;
   this->maze_.push_back(line);
 }
 
@@ -154,9 +155,7 @@ void Maze::cleanMaze() {
   this->maze_.clear();
 }
 
-void Maze::cleanPath() {
-  this->path_.clear();
-}
+void Maze::cleanPath() { this->path_.clear(); }
 
 void Maze::assignUniqueSetToCells(std::vector<Cell> &line) {
   for (Cell &cell : line) {
@@ -178,8 +177,7 @@ void Maze::setRightWall(std::vector<Cell> &line) {
       line[i].r_wall = true;
     }
   }
-  line.back().r_wall = true;  // не по алгоритму, но Рамиль сказал что так
-                              // классно
+  line.back().r_wall = true;
 }
 
 void Maze::setBottomWall(std::vector<Cell> &line) {

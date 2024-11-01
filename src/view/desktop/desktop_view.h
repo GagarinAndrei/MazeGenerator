@@ -1,6 +1,7 @@
 #ifndef VIEW_DESKTOP_VIEW_H_
 #define VIEW_DESKTOP_VIEW_H_
 
+#include <qpoint.h>
 #include <qtmetamacros.h>
 #include <qvariant.h>
 
@@ -24,23 +25,22 @@ class DesktopView : public QObject {
         };
   ~DesktopView() = default;
 
-  Q_INVOKABLE QVariant getMazeData() const;
+  Q_INVOKABLE QVariantList getMazeData() const;
   Q_INVOKABLE void generateMaze();
-  Q_INVOKABLE void findPath(const QVariant &start, const QVariant &target);
+  Q_INVOKABLE void findPath(const QPoint &start, const QPoint &target);
   Q_INVOKABLE void printLabirinth();  // for debug
-
-  inline Maze &getMaze() { return this->controller_.getMaze(); }
-  // Q_INVOKABLE QVariantList getPath() const;
-  Q_INVOKABLE QVariantList vectorToVariantList();
-
+  Q_INVOKABLE QVariantList vectorToVariantList() const;
   Q_INVOKABLE int getHeight() { return this->controller_.getHeight(); }
   Q_INVOKABLE int getWidth() { return this->controller_.getWidth(); }
+
+  inline Maze &getMaze() { return this->controller_.getMaze(); }
 
   inline void setHeight(int height) {
     this->controller_.setHeight(height);
     this->mazeHeight_ = height;
     emit mazeHeightChanged();
   }
+
   inline void setWidth(int width) {
     this->controller_.setWidth(width);
     this->mazeWidth_ = width;

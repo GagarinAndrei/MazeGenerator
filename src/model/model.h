@@ -67,7 +67,6 @@ class Maze {
   void cleanMaze();
   void cleanPath();
 
-
   void assignUniqueSetToCells(std::vector<Cell> &line);
 
   void setRightWall(std::vector<Cell> &line);
