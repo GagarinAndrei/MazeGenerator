@@ -51,13 +51,11 @@ class Maze {
   inline Matrix &getMaze() { return this->maze_; };
   inline Cell getCell(int i, int j) { return maze_[i][j]; }
 
-  // TODO: Потом перенети эти функции в класс PathFinder
   inline std::vector<Position> &getPath() { return this->path_; };
   std::vector<Position> getNeighbors(const Position &pos);
   void findPath(const Position &start, const Position &target);
   bool isTargetReached(const Position &current, const Position &target);
   bool isThereParent(const Position &current);
-  // Потом перенети эти функции в класс PathFinder
 
  private:
   void generateFirstLine();
