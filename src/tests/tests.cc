@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
-#include <iterator>
 #include <stdexcept>
 #include <string>
 #include <vector>
