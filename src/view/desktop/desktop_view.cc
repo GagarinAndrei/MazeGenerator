@@ -14,28 +14,28 @@ void DesktopView::generateMaze() {
 }
 
 void DesktopView::findPath(const QPoint &start, const QPoint &target) {
-  Maze::Position startPos = {start.x(), start.y()};
-  Maze::Position targetPos = {target.x(), target.y()};
-  controller_.findPath(startPos, targetPos);
+  Maze::Position start_pos = {start.x(), start.y()};
+  Maze::Position targe_pos = {target.x(), target.y()};
+  controller_.findPath(start_pos, targe_pos);
   emit this->mazeDataChanged();
 }
 
 // Функция для преобразования Position в QVariantMap
 QVariant positionToVariantMap(const Maze::Position &pos) {
-  QVariantMap variantMap;
-  variantMap["x"] = pos.x;
-  variantMap["y"] = pos.y;
-  return variantMap;
+  QVariantMap variant_map;
+  variant_map["x"] = pos.x;
+  variant_map["y"] = pos.y;
+  return variant_map;
 }
 
 void DesktopView::saveMazeInFile(const QString &filePath) {
-  std::string filePathStd = filePath.toStdString();
-  this->controller_.saveMazeInFile(filePathStd);
+  std::string file_path_std = filePath.toStdString();
+  this->controller_.saveMazeInFile(file_path_std);
 }
 
 void DesktopView::loadMazeFromFile(const QString &filePath) {
-  std::string filePathStd = filePath.toStdString();
-  this->controller_.loadMazeFromFile(filePathStd);
+  std::string file_path_std = filePath.toStdString();
+  this->controller_.loadMazeFromFile(file_path_std);
   emit this->mazeDataChanged();
 }
 
@@ -68,31 +68,4 @@ QVariantList DesktopView::getMazeData() const {
   }
   return maze_data;
 }
-
-void DesktopView::printLabirinth() {
-  qDebug() << "-= MAZE =-";
-
-  Maze &maze = this->getMaze();
-  int height = maze.getHeight();
-  int width = maze.getWidth();
-
-  for (int i = 0; i < height; ++i) {
-    QString row;
-    row += "|";  // Левая граница
-
-    for (int j = 0; j < width; ++j) {
-      if (maze.getMaze()[i][j].r_wall && maze.getMaze()[i][j].b_wall) {
-        row += "_|";
-      } else if (maze.getMaze()[i][j].r_wall) {
-        row += " |";
-      } else if (maze.getMaze()[i][j].b_wall) {
-        row += "__";
-      } else {
-        row += "  ";
-      }
-    }
-    qDebug() << row;
-  }
-}
-
 }  // namespace s21

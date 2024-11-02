@@ -38,13 +38,5 @@ int main(int argc, char *argv[]) {
 
   cli.printLabirinth();
 
-  // for (int i = 0; i < height; i++) {
-  //   for (int j = 0; j < width; j++) {
-  //     std::cout << maze.getMaze()[i][j].x << " " << maze.getMaze()[i][j].y
-  //               << " | ";
-  //   }
-  //   std::cout << std::endl;
-  // }
-
   return 0;
 }

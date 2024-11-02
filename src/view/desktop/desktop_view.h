@@ -28,7 +28,6 @@ class DesktopView : public QObject {
   Q_INVOKABLE QVariantList getMazeData() const;
   Q_INVOKABLE void generateMaze();
   Q_INVOKABLE void findPath(const QPoint &start, const QPoint &target);
-  Q_INVOKABLE void printLabirinth();  // for debug
   Q_INVOKABLE QVariantList vectorToVariantList() const;
   Q_INVOKABLE int getHeight() { return this->controller_.getHeight(); }
   Q_INVOKABLE int getWidth() { return this->controller_.getWidth(); }
