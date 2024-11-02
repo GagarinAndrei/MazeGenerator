@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="200" height="50" viewBox="0 0 200 50" xml:space="preserve">
+<desc>Created with Fabric.js 5.2.4</desc>
+<defs>
+</defs>
+<g transform="matrix(0 0 0 0 0 0)" id="52b9d042-cff2-4ebb-808d-989ad4d74a5f"  >
+</g>
+<g transform="matrix(1 0 0 1 100 25)" id="06cf4fcf-f0a2-4f4c-9fd3-61e1cae9cdc7"  >
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  x="-100" y="-25" rx="0" ry="0" width="200" height="50" />
+</g>
+<g transform="matrix(1 0 0 1 100 25)" style="" id="30eb7e39-f949-4a55-b1de-ca819c23f8b2"  >
+		<text xml:space="preserve" font-family="Raleway" font-size="23" font-style="normal" font-weight="900" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(251,251,251); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-73.59" y="7.23" >I</tspan><tspan x="-65.72" y="7.23" >T</tspan><tspan x="-50.8" y="7.23" >_</tspan><tspan x="-40.08" y="7.23" >Ч</tspan><tspan x="-24.35" y="7.23" >у</tspan><tspan x="-11.01" y="7.23" >ш</tspan><tspan x="10.48" y="7.23" >п</tspan><tspan x="24.97" y="7.23" >а</tspan><tspan x="39.36" y="7.23" >н</tspan><tspan x="54.2" y="7.23" >ы</tspan></text>
+</g>
+<g transform="matrix(2.04 0 0 1 100 25)" id="e44ad1c0-b085-4242-9fe3-b4385c87b488"  >
+<path style="stroke: rgb(0,0,0); stroke-opacity: 0; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(101,101,101); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-50, -50)" d="M 50 92.875 C 26.358 92.875 7.125 73.642 7.125 50 C 7.125 26.358000000000004 26.358 7.125 50 7.125 C 73.642 7.125 92.875 26.358 92.875 50 C 92.875 73.642 73.642 92.875 50 92.875 z M 50 9.125 C 27.461 9.125 9.125 27.461 9.125 50 C 9.125 72.538 27.461 90.875 50 90.875 C 72.538 90.875 90.875 72.538 90.875 50 C 90.875 27.461 72.538 9.125 50 9.125 z" stroke-linecap="round" />
+</g>
+</svg>
