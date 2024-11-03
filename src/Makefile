@@ -48,7 +48,7 @@ dist:
 	rm -rf ${DIST_DIR}
 
 dvi:
-	
+	${OPEN_COMMAND} doc/index.html
 
 run:
 	./${TARGET}
