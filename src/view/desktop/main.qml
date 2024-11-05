@@ -1,82 +1,265 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import com.example.maze 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Qt.labs.platform
 
 ApplicationWindow {
-    visible: true
+    id: root
     width: 800
-    height: 600
+    height: 540
+    visible: true
+    title: qsTr("Maze")
 
-    Maze {
-        id: mazeLogic
-        onGenerated: {
-            console.log("Лабиринт сгенерирован");
-            mazeCanvas.updateMaze(); // Обновляем отрисовку после генерации
+    Connections {
+        target: View
+        function onMazeDataChanged()
+        {
+            canvas.requestPaint();
         }
     }
 
-    Rectangle {
-        width: parent.width
-        height: parent.height
-        color: "lightgray"
+    RowLayout {
+        id: rowLayaut
+        spacing: 12
+        anchors.margins: 16
+        anchors.fill: parent
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                // Обработка клика по лабиринту
-                let cell = mazeLogic.getCell(mouse.y / cellHeight, mouse.x / cellWidth);
-                console.log("Кликнули по ячейке:", cell.set);
-            }
-        }
-        
-        Button {
-            text: "Сгенерировать лабиринт"
-            onClicked:{ 
-                mazeLogic.setSize(10, 10);
-                mazeLogic.generate();
-            }
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-        
-        // Вычисление размеров ячеек (например)
-        property real cellHeight: height / mazeLogic.getHeight()
-        property real cellWidth: width / mazeLogic.getWidth()
+        Canvas {
+            id: canvas
+            width: 500
+            height: 500
+            Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
 
-        // Компонент для отрисовки лабиринта
-        Rectangle {
-            id: mazeCanvas
-            anchors.fill: parent
+            property int rows: rowCountSpinBox.value;
+                property int cols: colCountSpinBox.value;
+                    property var startPoint: null;
+                        property var endPoint: null;
 
-            function updateMaze() {
-                // Очищаем предыдущую отрисовку
-                children.forEach(child => child.destroy());
-                
-                for (let y = 0; y < mazeLogic.getHeight(); y++) {
-                    for (let x = 0; x < mazeLogic.getWidth(); x++) {
-                        let cell = mazeLogic.getCell(y, x);
-                        if (cell.isWall) {
-                            // Создаем стену для ячейки с wall
-                            Rectangle {
-                                width: cellWidth
-                                height: cellHeight
-                                color: "black"
-                                x: x * cellWidth
-                                y: y * cellHeight
+                            onPaint: {
+                                var ctx = getContext("2d");
+                                if (!ctx)
+                                {
+                                    return;
+                                }
+                                ctx.fillStyle = "grey";
+                                ctx.fillRect(0, 0, width, height);
+                                ctx.clearRect(0, 0, width, height);
+                                ctx.strokeStyle = "black";
+                                ctx.lineWidth = 2;
+                                var mazeData = View.getMazeData();
+                                rows = rowCountSpinBox.value;
+                                cols = colCountSpinBox.value;
+
+                                var mazeData2D = [];
+                                for (var i = 0; i < rows; i++) {
+                                    var row = [];
+                                    for (var j = 0; j < cols; j++) {
+                                        row.push(mazeData[i * cols + j]);
+                                    }
+                                    mazeData2D.push(row);
+                                }
+
+                                if (mazeData2D && mazeData2D.length > 0 && mazeData2D[0] && mazeData2D[0].length > 0)
+                                {
+                                    var devider = (mazeData2D.length > mazeData2D[0].length) ? mazeData2D.length : mazeData2D[0].length;
+                                    var cellSize = canvas.width / devider;
+                                    ctx.beginPath();
+                                    for (var i = 0; i < mazeData2D.length; i++) {
+                                        for (var j = 0; j < mazeData2D[i].length; j++) {
+                                            var cell = mazeData2D[i][j];
+                                            var x = j * cellSize;
+                                            var y = i * cellSize;
+                                            if (cell.r_wall)
+                                            {
+                                                ctx.moveTo(x + cellSize, y);
+                                                ctx.lineTo(x + cellSize, y + cellSize);
+                                            }
+                                            if (cell.b_wall)
+                                            {
+                                                ctx.moveTo(x, y + cellSize);
+                                                ctx.lineTo(x + cellSize, y + cellSize);
+                                            }
+                                        }
+                                    }
+                                    ctx.stroke();
+                                    // Отрисовка начальной и конечной точки
+                                    if (startPoint)
+                                    {
+                                        ctx.fillStyle = "green";
+                                        ctx.fillRect(startPoint.x * cellSize, startPoint.y * cellSize, cellSize, cellSize);
+                                    }
+                                    if (endPoint)
+                                    {
+                                        ctx.fillStyle = "red";
+                                        ctx.fillRect(endPoint.x * cellSize, endPoint.y * cellSize, cellSize, cellSize);
+                                    }
+                                    // Отрисовка пути
+                                    var path = View.vectorToVariantList();
+                                    if (path.length > 0)
+                                    {
+                                        ctx.strokeStyle = "blue";
+                                        ctx.lineWidth = 2;
+                                        ctx.beginPath();
+                                        var start = path[0];
+                                        var startX = start.x * cellSize + cellSize / 2;
+                                        var startY = start.y * cellSize + cellSize / 2;
+                                        ctx.moveTo(startX, startY);
+                                        for (var i = 1; i < path.length; i++) {
+                                            var pos = path[i];
+                                            var x = pos.x * cellSize + cellSize / 2;
+                                            var y = pos.y * cellSize + cellSize / 2;
+                                            ctx.lineTo(x, y);
+                                        }
+                                        ctx.stroke();
+                                    }
+
+                                }
                             }
-                        } else {
-                            // Создаем пустую ячейку (можно добавить цвет или другие элементы)
-                            Rectangle {
-                                width: cellWidth
-                                height: cellHeight
-                                color: "white"
-                                x: x * cellWidth
-                                y: y * cellHeight
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    var cellSize = canvas.width / canvas.rows;
+                                    var x = Math.floor(mouse.x / cellSize);
+                                    var y = Math.floor(mouse.y / cellSize);
+                                    if (!canvas.startPoint)
+                                    {
+                                    canvas.startPoint = {x: x, y: y};
+                                    } else if (!canvas.endPoint) {
+                                    canvas.endPoint = {x: x, y: y};
+                                } else {
+                                canvas.startPoint = null;
+                                canvas.endPoint = null;
+                            }
+                            canvas.requestPaint();
+                        }
+                    }
+                }
+
+                ColumnLayout {
+                    spacing: 12
+                    Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+
+                    RowLayout {
+                        id: buttonRow
+                        spacing: 12
+                        Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+
+                        Button {
+                            id: saveButton
+                            text: "Save"
+                            font.pixelSize: 18
+                            onClicked: {
+                                saveFile.open();
+                            }
+                        }
+
+                        FileDialog {
+                            id: saveFile
+                            title: "Save maze in file"
+                            fileMode: FileDialog.SaveFile
+                            nameFilters: ["Text files (*.txt)"]
+                            onAccepted: {
+                                var filePath = saveFile.file.toString();
+                                if (filePath.startsWith("file://"))
+                                {
+                                    filePath = filePath.substring(7);
+                                }
+                                View.saveMazeInFile(filePath);
+                            }
+                        }
+
+                        Button {
+                            id: loadButton
+                            text: "Load"
+                            font.pixelSize: 18
+                            onClicked: {
+                                loadFile.open();
+                            }
+                        }
+
+                        FileDialog {
+                            id: loadFile
+                            title: "Choose a file with maze"
+                            fileMode: FileDialog.OpenFile
+                            defaultSuffix: "txt"
+                            nameFilters: ["Text files (*.txt)"]
+                            onAccepted: {
+                                var fileUrl = loadFile.file.toString();
+                                var filePath = fileUrl.replace(/^(file:\/{2})|(qrc:\/{2})|(http:\/{2})/, "");
+                                var filePathString = filePath.toString();
+                                View.loadMazeFromFile(filePathString);
+                                rowCountSpinBox.value = View.getHeight();
+                                colCountSpinBox.value = View.getWidth();
+                            }
+                        }
+                    }
+
+                    Text {
+                        Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+                        text: "Generation settings:"
+                    }
+
+                    RowLayout {
+                        Text {
+                            text: "Maze rows:"
+                            Layout.preferredWidth: 80
+                        }
+                        SpinBox {
+                            id: rowCountSpinBox
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: true
+                            editable: true
+                            from: 1
+                            to: 50
+                            onValueChanged: {
+                                View.mazeHeight = value;
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        Text {
+                            text: "Maze cols:"
+                            Layout.preferredWidth: 80
+                        }
+                        SpinBox {
+                            id: colCountSpinBox
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: true
+                            editable: true
+                            from: 1
+                            to: 50
+                            onValueChanged: {
+                                View.mazeWidth = value;
+                            }
+                        }
+                    }
+
+                    Button {
+                        id: generateButton
+                        text: "Generate"
+                        font.pixelSize: 18
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        onClicked: {
+                            View.generateMaze();
+                        }
+                    }
+
+                    Button {
+                        id: findWayButton
+                        text: "Find Path"
+                        font.pixelSize: 18
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        onClicked: {
+                            if (canvas.startPoint && canvas.endPoint)
+                            {
+                                View.findPath(canvas.startPoint, canvas.endPoint);
                             }
                         }
                     }
                 }
             }
         }
-    }
-}

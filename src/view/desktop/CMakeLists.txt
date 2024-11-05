@@ -14,8 +14,11 @@ qt_standard_project_setup()
 # Определяем компилируемые файлы
 qt_add_executable(Maze
   main.cc
-  ../../model/maze.cc
-  ../../controller/controller.cc
+  ../../model/model.cc
+  ../../model/model.h
+  ../../controller/controller.h
+  desktop_view.cc
+  desktop_view.h
 )
  
 # Добавляем файлы qml

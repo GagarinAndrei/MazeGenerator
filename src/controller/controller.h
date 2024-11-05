@@ -1,20 +1,31 @@
 #ifndef CONTROLLER_CONTROLLER_H_
 #define CONTROLLER_CONTROLLER_H_
 
-#include "../model/maze.h"
+#include "../model/model.h"
 
 namespace s21 {
 
 class Controller {
  public:
-  Controller(Maze &maze) : maze_{maze} {}
+  explicit Controller(Maze &maze) : maze_{maze} {}
   ~Controller() {}
 
   inline Maze &getMaze() { return this->maze_; }
-
-  void generateMaze();
-  void saveMazeInFile();
-  void loadMazeFromFile(const std::string &filename);
+  inline int getHeight() { return this->maze_.getHeight(); }
+  inline int getWidth() { return this->maze_.getWidth(); }
+  inline void setHeight(int height) { this->maze_.setHeight(height); }
+  inline void setWidth(int width) { this->maze_.setWidth(width); }
+  inline void saveMazeInFile(const std::string &filePath) {
+    this->maze_.saveMazeInFile(filePath);
+  };
+  inline void loadMazeFromFile(const std::string &filePath) {
+    this->maze_.loadMazeFromFile(filePath);
+  };
+  inline void generateMaze() { this->maze_.generate(); };
+  inline void findPath(const Maze::Position &start,
+                       const Maze::Position &target) {
+    this->maze_.findPath(start, target);
+  };
 
  private:
   Maze &maze_;

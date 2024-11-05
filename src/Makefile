@@ -4,15 +4,16 @@ CC = g++
 CFLAGS = -Wall -Wextra -Werror -std=c++17
 LIBRARIES = -lncurses
 GCOV_FLAGS := -fprofile-arcs -ftest-coverage
-LCOV_FLAGS := --ignore-errors inconsistent,empty --no-external -t -s
+LCOV_FLAGS := --ignore-errors inconsistent,empty,unused --no-external -t "test" --source-directory . -o test.info -c -d .
 VALGRIND_FLAGS := --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log
 
 TARGET :=Maze
 DIST_DIR :=archive
 
 SOURCES := model/*.cc
-CONTROLLER := controller/*.cc
+CONTROLLER :=
 CLI_VIEW := view/cli/*.cc
+TEST := tests/*.cc
 
 ifeq ($(shell uname), Linux)
 	TEST_FLAGS := -lcheck -lgtest -lm -lpthread -lrt -lsubunit
@@ -34,17 +35,36 @@ install:
 	cd view/desktop && cmake -B build . && cmake --build build
 	cp view/desktop/build/${TARGET} .
 
+uninstall:
+	rm ${TARGET}
+
+dist:
+	mkdir -p ${DIST_DIR}
+	cp -rf model/ ${DIST_DIR}/model/
+	cp -rf view/ ${DIST_DIR}/view/
+	cp -rf controller/ ${DIST_DIR}/controller/
+	cp -rf Makefile ${DIST_DIR}/
+	tar -czvf ${DIST_DIR}.tar.gz ${DIST_DIR}
+	rm -rf ${DIST_DIR}
+
+dvi:
+	
+
 run:
 	./${TARGET}
 
 cli:
 	$(CC) -g ${SOURCES} ${CONTROLLER} ${CLI_VIEW} ${CFLAGS} ${LIBRARIES} -o ${TARGET}_exe
 
+test: clean
+	${CC} -g ${SOURCES} ${TEST} ${TEST_FLAGS} ${LIBRARIES} -o ${TARGET}_test
+	./${TARGET}_test
+
 gcov_report: clean
 	@mkdir -p report
-	${CC} $(BACKEND_SOURCES) $(TEST_FLAGS) $(GCOV_FLAGS) -o ./gcov_report.out
+	${CC} ${SOURCES} ${TEST} ${TEST_FLAGS} ${LIBRARIES} $(GCOV_FLAGS) -o ./gcov_report.out
 	./gcov_report.out
-	lcov ${LCOV_FLAGS} "test" -o test.info -c -d .
+	lcov ${LCOV_FLAGS}
 	genhtml -o report/ test.info
 	${OPEN_COMMAND} ./report/index.html
 	make clean_gcov

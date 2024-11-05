@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #include "../../controller/controller.h"
-#include "../../model/maze.h"
+#include "../../model/model.h"
 #include "cli_view.h"
 
 int main(int argc, char *argv[]) {
@@ -37,5 +37,6 @@ int main(int argc, char *argv[]) {
   }
 
   cli.printLabirinth();
+
   return 0;
 }
