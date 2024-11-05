@@ -1,6 +1,7 @@
 #include "model.h"
 
 #include <sys/types.h>
+
 #include <cstddef>
 #include <fstream>
 #include <iostream>
@@ -29,7 +30,6 @@ void Maze::generate() {
     }
   }
   generateLastLine();
-  emit generated();
 }
 
 void Maze::saveMazeInFile(const std::string &filename) {

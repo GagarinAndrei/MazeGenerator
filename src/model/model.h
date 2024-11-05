@@ -4,15 +4,9 @@
 
 #include <string>
 #include <vector>
-#include <QObject>
-
 namespace s21 {
 
-class Maze : public QObject {
-  Q_OBJECT
-
-signals:
-    void generated();
+class Maze {
  public:
   typedef struct Position {
     int x;
@@ -40,9 +34,6 @@ signals:
 
   Maze() {};
   ~Maze() = default;
-  Q_INVOKABLE void generate();
-  Q_INVOKABLE void saveMazeInFile();
-  Q_INVOKABLE void loadMazeFromFile(const std::string &filename);
 
   void generate();
   void saveMazeInFile(const std::string &filename);
@@ -58,8 +49,7 @@ signals:
   inline void setHeight(int height) { this->rows_ = height; };
   inline void setWidth(int width) { this->cols_ = width; };
   inline Matrix &getMaze() { return this->maze_; };
-  Q_INVOKABLE inline Cell getCell(int i, int j) { return maze_[i][j]; }
-
+  inline Cell getCell(int i, int j) { return maze_[i][j]; }
 
   inline std::vector<Position> &getPath() { return this->path_; };
   std::vector<Position> getNeighbors(const Position &pos);

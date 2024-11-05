@@ -2,15 +2,14 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+#include "../../model/maze.h"
 #include "../../model/model.h"
 #include "desktop_view.h"
-
-#include "../../model/maze.h"
 int main(int argc, char *argv[]) {
   QGuiApplication app(argc, argv);
 
   qmlRegisterType<s21::Maze>("com.example.maze", 1, 0, "Maze");
-  
+
   QQmlApplicationEngine engine;
 
   s21::Maze maze;

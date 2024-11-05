@@ -12,7 +12,7 @@ namespace game {
 
 class Maze {
  public:
-  Maze(){};
+  Maze() {};
   Maze(int rows, int cols);
   ~Maze() = default;
 
