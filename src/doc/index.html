@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header_container">
+            <div class="header_logo">
+                <a href="index.html" class="header_logo_link">
+                    <img src="img/logo.svg" alt="Лого сайта">
+                </a>
+            </div>
+            <div class="header_menu_container">
+                <button class="burger_menu_toggle" aria-label="Открыть/закрыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav class="header_menu">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="#advantages">Основные преимущества</a></li>
+                    <li><a href="#description">Описание</a></li>
+                    <li><a href="#installation">Приложение</a></li>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="main_wrapper">
+            <div class="main_image_container"></div>
+            <div class="advantages" id="advantages">
+                <ul class="advantages_list">
+                    <li>Автоматическая генерация идеального лабиринта</li>
+                    <li>Максимальный размер 50х50</li>
+                    <li>Запись и чтение из файла</li>
+                    <li>Возможность нахождения кратчайшего пути</li>
+                </ul>
+            </div>
+            
+            <div class="description" id="description">
+                <p>Разработана на языке C++ стандарта C++17</p>
+                <p>Сборка программы настроена с помощью Makefile с набором целей: all, install, uninstall, clean, dvi, dist, tests и др. </p>
+                <p>Графический пользовательский интерфейс на базе GUI-библиотеки Qt</p>
+                <p>Максимальный размер лабиринта — 50х50.</p>
+                <p>Генерация лабиринт согласно алгоритму Эллера.</p>
+                <p>Пользователем указывается только размерность лабиринта: количество строк и столбцов.</p>
+                <p>Возможность нахождения кратчайшего пути.</p>
+                <p>Возможность записи и чтения из файла.</p>
+            </div>
+
+            <div class="app-installation" id="installation">
+                <div class="left-side">
+                    <img src="img/maze_program.jpeg" alt="Изображение приложения">
+                </div>
+                <div class="right-side">
+                    <h2>Установка приложения</h2>
+                    <p>Скачайте и установите нашу уникальную программу для генерации лабиринтов.</p>
+                    <button class="install-button">Скачать и установить</button>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="simple-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="img/logo.svg" alt="Логотип" class="logo">
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Проект</h5>
+                    <p>A1_Maze_CPP</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Команда</h5>
+                    <p>&copy; IT_Чушпаны</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
