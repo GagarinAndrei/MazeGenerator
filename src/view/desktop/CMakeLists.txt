@@ -16,6 +16,8 @@ qt_add_executable(Maze
   main.cc
   ../../model/model.cc
   ../../model/model.h
+  ../../model/cave_generator.cc
+  ../../model/cave_generator.h
   ../../controller/controller.h
   desktop_view.cc
   desktop_view.h

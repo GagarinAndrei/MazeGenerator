@@ -58,7 +58,6 @@ ApplicationWindow {
                                     }
                                     mazeData2D.push(row);
                                 }
-
                                 if (mazeData2D && mazeData2D.length > 0 && mazeData2D[0] && mazeData2D[0].length > 0)
                                 {
                                     var devider = (mazeData2D.length > mazeData2D[0].length) ? mazeData2D.length : mazeData2D[0].length;
@@ -124,7 +123,7 @@ ApplicationWindow {
                                     var y = Math.floor(mouse.y / cellSize);
                                     if (!canvas.startPoint)
                                     {
-                                    canvas.startPoint = {x: x, y: y};
+                                        canvas.startPoint = {x: x, y: y};
                                     } else if (!canvas.endPoint) {
                                     canvas.endPoint = {x: x, y: y};
                                 } else {
@@ -135,6 +134,9 @@ ApplicationWindow {
                         }
                     }
                 }
+
+
+
 
                 ColumnLayout {
                     spacing: 12
@@ -260,6 +262,211 @@ ApplicationWindow {
                             }
                         }
                     }
+
+                    Button {
+                        text: "Open Cave Window"
+                        font.pixelSize: 18
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        onClicked: {
+                            caveWindow.show()
+                        }
+                    }
+                }
+            }
+
+            // ++++++++++++++CAVE WINDOW++++++++++++++
+
+            Window {
+                id: caveWindow
+                width: 800
+                height: 540
+                visible: false
+                title: qsTr("Cave")
+
+                Connections {
+                    target: View
+                    function onCaveDataChanged()
+                    {
+                        canvasCave.requestPaint();
+                    }
+                }
+
+                RowLayout {
+                    id: rowLayautCave
+                    spacing: 12
+                    anchors.margins: 16
+                    anchors.fill: parent
+
+                    Canvas {
+                        id: canvasCave
+                        width: 500
+                        height: 500
+                        Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+
+                        onPaint: {
+                            var ctx = getContext("2d");
+                            if (!ctx)
+                            {
+                                return;
+                            }
+
+                            ctx.fillStyle = "grey";
+                            ctx.fillRect(0, 0, width, height);
+                            ctx.clearRect(0, 0, width, height);
+
+                            var caveData = View.getCaveData();
+                            rows = heightCountSpinBox.value;
+                            cols = widthCountSpinBox.value;
+
+                            var caveData2D = [];
+                            for (var i = 0; i < rows; i++) {
+                                var row = [];
+                                for (var j = 0; j < cols; j++) {
+                                    row.push(caveData[i * cols + j]);
+                                }
+                                caveData2D.push(row);
+                            }
+
+                            if (caveData2D && caveData2D.length > 0 && caveData2D[0] && caveData2D[0].length > 0)
+                            {
+                                var devider = (caveData2D.length > caveData2D[0].length) ? caveData2D.length : caveData2D[0].length;
+                                var cellSize = canvasCave.width / devider;
+
+                                for (var i = 0; i < caveData2D.length; i++) {
+                                    for (var j = 0; j < caveData2D[i].length; j++) {
+                                        var cell = caveData2D[i][j];
+                                        var x = j * cellSize;
+                                        var y = i * cellSize;
+
+                                        if (cell)
+                                        {
+                                            ctx.fillStyle = "black";
+                                        } else {
+                                        ctx.fillStyle = "grey";
+                                    }
+
+                                    ctx.fillRect(x, y, cellSize, cellSize);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
+
+                ColumnLayout {
+                    spacing: 12
+                    Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+
+                    RowLayout {
+                        id: buttonRowCave
+                        spacing: 12
+                        Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+
+                        Button {
+                            id: saveButtonCave
+                            text: "Save"
+                            font.pixelSize: 18
+                            onClicked: {
+                                saveFileCave.open();
+                            }
+                        }
+
+                        FileDialog {
+                            id: saveFileCave
+                            title: "Save maze in file"
+                            fileMode: FileDialog.SaveFile
+                            nameFilters: ["Text files (*.txt)"]
+                            onAccepted: {
+                                var filePath = saveFileCave.file.toString();
+                                if (filePath.startsWith("file://"))
+                                {
+                                    filePath = filePath.substring(7);
+                                }
+                                View.saveMazeInFile(filePath);
+                            }
+                        }
+
+                        Button {
+                            id: loadButtonCave
+                            text: "Load"
+                            font.pixelSize: 18
+                            onClicked: {
+                                loadFileCave.open();
+                            }
+                        }
+
+                        FileDialog {
+                            id: loadFileCave
+                            title: "Choose a file with maze"
+                            fileMode: FileDialog.OpenFile
+                            defaultSuffix: "txt"
+                            nameFilters: ["Text files (*.txt)"]
+                            onAccepted: {
+                                var fileUrl = loadFileCave.file.toString();
+                                var filePath = fileUrl.replace(/^(file:\/{2})|(qrc:\/{2})|(http:\/{2})/, "");
+                                var filePathString = filePath.toString();
+                                View.loadCaveFromFile(filePathString);
+                                heightCountSpinBox.value = View.getCaveHeight();
+                                widthCountSpinBox.value = View.getCaveWidth();
+                            }
+                        }
+                    }
+
+                    Text {
+                        Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+                        text: "Generation settings:"
+                    }
+
+                    RowLayout {
+                        Text {
+                            text: "Cave rows:"
+                            Layout.preferredWidth: 80
+                        }
+                        SpinBox {
+                            id: heightCountSpinBox
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: true
+                            editable: true
+                            from: 1
+                            to: 50
+                            onValueChanged: {
+                                View.caveHeight = value;
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        Text {
+                            text: "Cave width:"
+                            Layout.preferredWidth: 80
+                        }
+                        SpinBox {
+                            id: widthCountSpinBox
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: true
+                            editable: true
+                            from: 1
+                            to: 50
+                            onValueChanged: {
+                                View.caveWidth = value;
+                            }
+                        }
+                    }
+
+                    Button {
+                        id: generateButtonCave
+                        text: "Generate"
+                        font.pixelSize: 18
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        onClicked: {
+                            View.generateCave();
+                        }
+                    }
                 }
             }
         }
+    }

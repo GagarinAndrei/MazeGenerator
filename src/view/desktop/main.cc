@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include "../../model/maze.h"
+#include "../../model/cave_generator.h"
 #include "../../model/model.h"
 #include "desktop_view.h"
 int main(int argc, char *argv[]) {
@@ -13,7 +13,8 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
 
   s21::Maze maze;
-  s21::Controller controller(maze);
+  s21::CaveGenerator cave_generator;
+  s21::Controller controller(maze, cave_generator);
   s21::DesktopView view(controller);
 
   engine.rootContext()->setContextProperty("View", &view);

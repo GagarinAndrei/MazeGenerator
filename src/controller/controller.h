@@ -1,13 +1,15 @@
 #ifndef CONTROLLER_CONTROLLER_H_
 #define CONTROLLER_CONTROLLER_H_
 
+#include "../model/cave_generator.h"
 #include "../model/model.h"
 
 namespace s21 {
 
 class Controller {
  public:
-  explicit Controller(Maze &maze) : maze_{maze} {}
+  explicit Controller(Maze &maze, CaveGenerator &cave_generator)
+      : maze_{maze}, cave_generator_{cave_generator} {}
   ~Controller() {}
 
   inline Maze &getMaze() { return this->maze_; }
@@ -27,8 +29,24 @@ class Controller {
     this->maze_.findPath(start, target);
   };
 
+  inline CaveGenerator &getCave() { return this->cave_generator_; }
+  inline int getHeightCave() { return this->cave_generator_.getHeight(); }
+  inline int getWidthCave() { return this->cave_generator_.getWidth(); }
+  inline void setHeightCave(int height) {
+    this->cave_generator_.setHeight(height);
+  }
+  inline void setWidthCave(int width) { this->cave_generator_.setWidth(width); }
+  inline void saveCaveInFile(const std::string &filePath) {
+    this->cave_generator_.saveCaveInFile(filePath);
+  };
+  inline void loadCaveFromFile(const std::string &filePath) {
+    this->cave_generator_.loadCaveFromFile(filePath);
+  };
+  inline void generateCave() { this->cave_generator_.generate(); };
+
  private:
   Maze &maze_;
+  CaveGenerator &cave_generator_;
 };
 }  // namespace s21
 

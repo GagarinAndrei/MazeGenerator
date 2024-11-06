@@ -19,10 +19,20 @@ class DesktopView : public QObject {
   Q_PROPERTY(
       int mazeWidth READ getWidth WRITE setWidth NOTIFY mazeHeightChanged)
 
+  Q_PROPERTY(QVariant caveData READ getCaveData NOTIFY caveDataChanged)
+  Q_PROPERTY(int caveHeight READ getHeightCave WRITE setHeightCave NOTIFY
+                 caveHeightChanged)
+  Q_PROPERTY(int caveWidth READ getWidthCave WRITE setWidthCave NOTIFY
+                 caveHeightChanged)
+
  public:
   DesktopView(Controller &controller, QObject *parent = nullptr)
-      : QObject{parent}, controller_{controller}, mazeHeight_{}, mazeWidth_{} {
-        };
+      : QObject{parent},
+        controller_{controller},
+        mazeHeight_{},
+        mazeWidth_{},
+        caveHeight_{},
+        caveWidth_{} {};
   ~DesktopView() = default;
 
   Q_INVOKABLE QVariantList getMazeData() const;
@@ -32,7 +42,24 @@ class DesktopView : public QObject {
   Q_INVOKABLE int getHeight() { return this->controller_.getHeight(); }
   Q_INVOKABLE int getWidth() { return this->controller_.getWidth(); }
 
-  inline Maze &getMaze() { return this->controller_.getMaze(); }
+  Q_INVOKABLE QVariantList getCaveData() const;
+  Q_INVOKABLE void generateCave();
+  Q_INVOKABLE int getHeightCave() { return this->controller_.getHeightCave(); }
+  Q_INVOKABLE int getWidthCave() { return this->controller_.getWidthCave(); }
+
+  inline CaveGenerator &getCave() { return this->controller_.getCave(); }
+
+  inline void setHeightCave(int height) {
+    this->controller_.setHeightCave(height);
+    this->caveWidth_ = height;
+    emit caveHeightChanged();
+  }
+
+  inline void setWidthCave(int width) {
+    this->controller_.setWidthCave(width);
+    this->mazeWidth_ = width;
+    emit caveWidthChanged();
+  }
 
   inline void setHeight(int height) {
     this->controller_.setHeight(height);
@@ -49,16 +76,23 @@ class DesktopView : public QObject {
  public slots:
   void saveMazeInFile(const QString &filePath);
   void loadMazeFromFile(const QString &filePath);
+  void saveCaveInFile(const QString &filePath);
+  void loadCaveFromFile(const QString &filePath);
 
  signals:
   void mazeDataChanged();
   void mazeHeightChanged();
   void mazeWidthChanged();
+  void caveDataChanged();
+  void caveHeightChanged();
+  void caveWidthChanged();
 
  private:
   Controller &controller_;
   int mazeHeight_;
   int mazeWidth_;
+  int caveHeight_;
+  int caveWidth_;
 };
 
 }  // namespace s21

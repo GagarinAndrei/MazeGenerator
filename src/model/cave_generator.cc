@@ -1,39 +1,69 @@
 #include "cave_generator.h"
 
+#include <fstream>
 #include <iostream>
 #include <random>
-#include <thread>
 #include <vector>
 
 namespace s21 {
-CaveGenerator::CaveGenerator(int height, int width) {
-  if ((height <= 0 || width <= 0) &&
-      (height > MAX_CAVE_SIZE || width > MAX_CAVE_SIZE)) {
-    throw std::invalid_argument("Invalid cave size");
-  }
-  this->height_ = height;
-  this->width_ = width;
-
-  cave_.resize(height_);
+void CaveGenerator::resizeCave(int height, int width) {
+  this->cave_.resize(height_);
   for (auto &row : cave_) {
     row.resize(width_);
   }
 }
 
-void CaveGenerator::generate(int height, int width) {
-  // this->cleanCave();
+void CaveGenerator::generate() {
   this->generateFirstGeneration();
-  this->printCave();
-  std::cout << "_______________________" << std::endl;
   while (!isGenerationFinished()) {
     this->generateNextGeneration();
-    this->printCave();
-    std::cout << "_______________________" << std::endl;
-    // std::this_thread::sleep_for(std::chrono::milliseconds(400));
   }
 }
 
-bool CaveGenerator::initChanceGenerator() { return trueOrFalseGenerator(); }
+void CaveGenerator::saveCaveInFile(const std::string &filename) {
+  std::ofstream file;
+  file.open(filename);
+
+  if (file.is_open()) {
+    file << this->height_ << " " << this->width_ << std::endl;
+
+    for (size_t i = 0; i < this->cave_.size(); i++) {
+      for (size_t j = 0; j < this->cave_[0].size(); j++) {
+        file << cave_[i][j] << " ";
+      }
+      file << std::endl;
+    }
+    file.close();
+  }
+}
+
+void CaveGenerator::loadCaveFromFile(const std::string &filename) {
+  std::ifstream file(filename);
+
+  if (!file.is_open()) {
+    throw std::runtime_error("Failed to open file");
+  }
+
+  file >> height_ >> width_;
+  this->resizeCave(height_, width_);
+
+  for (int i = 0; i < this->height_; ++i) {
+    for (int j = 0; j < this->width_; ++j) {
+      int wall;
+      file >> wall;
+      cave_[i][j] = (wall == 1);
+    }
+  }
+
+  file.close();
+}
+
+void CaveGenerator::setSettings(Settings settings) {
+  this->settings_ = settings;
+  this->height_ = settings.height;
+  this->width_ = settings.width;
+  this->resizeCave(this->height_, this->width_);
+}
 
 int CaveGenerator::countLiveNeighbors(std::vector<std::vector<int>> cave, int x,
                                       int y) {
@@ -60,7 +90,7 @@ int CaveGenerator::countLiveNeighbors(std::vector<std::vector<int>> cave, int x,
 void CaveGenerator::generateFirstGeneration() {
   for (int i = 0; i < height_; i++) {
     for (int j = 0; j < width_; j++) {
-      cave_[i][j] = initChanceGenerator();
+      cave_[i][j] = trueOrFalseGenerator();
     }
   }
 }
@@ -92,23 +122,16 @@ bool CaveGenerator::trueOrFalseGenerator() {
   return dis(gen);
 }
 
-void CaveGenerator::cleanCave() {
-  for (std::vector<int> &row : this->cave_) {
-    row.clear();
-  }
-  this->cave_.clear();
-}
-
-void CaveGenerator::printCave() {
-  for (std::vector<int> &row : this->cave_) {
-    for (int &cell : row) {
-      if (cell == true) {
-        std::cout << " ";
-      } else {
-        std::cout << "X";
-      }
-    }
-    std::cout << "|" << std::endl;
-  }
-}
+// void CaveGenerator::printCave() {
+//   for (std::vector<int> &row : this->cave_) {
+//     for (int &cell : row) {
+//       if (cell == true) {
+//         std::cout << " ";
+//       } else {
+//         std::cout << "X";
+//       }
+//     }
+//     std::cout << "|" << std::endl;
+//   }
+// }
 }  // namespace s21

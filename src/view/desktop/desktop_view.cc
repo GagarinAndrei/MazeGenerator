@@ -68,4 +68,36 @@ QVariantList DesktopView::getMazeData() const {
   }
   return maze_data;
 }
+
+void DesktopView::generateCave() {
+  controller_.generateCave();
+  emit this->caveDataChanged();
+}
+
+void DesktopView::saveCaveInFile(const QString &filePath) {
+  std::string file_path_std = filePath.toStdString();
+  this->controller_.saveCaveInFile(file_path_std);
+}
+
+void DesktopView::loadCaveFromFile(const QString &filePath) {
+  std::string file_path_std = filePath.toStdString();
+  this->controller_.loadCaveFromFile(file_path_std);
+  emit this->mazeDataChanged();
+}
+
+QVariantList DesktopView::getCaveData() const {
+  QVariantList cave_data;
+  auto cave = controller_.getCave().getCave();
+  for (const auto &row : cave) {
+    QVariantList row_data;
+    for (const auto &cell : row) {
+      QVariantMap cell_data;
+      cell_data["block"] = cell;
+      row_data.append(cell_data);
+    }
+    cave_data.append(row_data);
+  }
+  return cave_data;
+}
+
 }  // namespace s21
