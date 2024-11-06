@@ -36,7 +36,9 @@ install:
 	cp view/desktop/build/${TARGET} .
 
 uninstall:
-	rm ${TARGET}
+	rm -f ${TARGET}
+	rm -f ${TARGET}_exe
+	rm -f ${TARGET}_test
 
 dist:
 	mkdir -p ${DIST_DIR}
@@ -100,7 +102,7 @@ clean_exec:
 	@find .. -type f -name "test" -exec rm {} \;
 
 clean_build:
-	@rm -rf view/build
+	@rm -rf view/desktop/build
 	@find ./view -type f -name "Makefile" -exec rm -f {} \;
 	@find .. -type f -name "cmake_install.cmake" -exec rm {} \;
 	@find .. -type f -name "CMakeCache.txt" -exec rm {} \;
