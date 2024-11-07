@@ -42,7 +42,15 @@ class Controller {
   inline void loadCaveFromFile(const std::string &filePath) {
     this->cave_generator_.loadCaveFromFile(filePath);
   };
-  inline void generateCave() { this->cave_generator_.generate(); };
+  inline void generateCave() {
+    this->cave_generator_.resizeCave(this->getCave().getHeight(),
+                                     this->getCave().getWidth());
+    this->cave_generator_.generate();
+  };
+
+  inline CaveGenerator::Settings &getSettings() {
+    return this->cave_generator_.getSettings();
+  }
 
  private:
   Maze &maze_;

@@ -284,6 +284,11 @@ ApplicationWindow {
                 visible: false
                 title: qsTr("Cave")
 
+                // Сигналы для передачи значений в C++
+                signal initChanceChanged(double value)
+                signal bornLimitsChanged(int value)
+                signal lifeLimitsChanged(int value)
+
                 Connections {
                     target: View
                     function onCaveDataChanged()
@@ -352,10 +357,6 @@ ApplicationWindow {
                         }
                     }
                 }
-
-
-
-
                 ColumnLayout {
                     spacing: 12
                     Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
@@ -456,17 +457,77 @@ ApplicationWindow {
                         }
                     }
 
-                    Button {
-                        id: generateButtonCave
-                        text: "Generate"
-                        font.pixelSize: 18
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignHCenter
-                        onClicked: {
-                            View.generateCave();
+                    RowLayout {
+                        Text {
+                            text: "Init chance:"
+                            Layout.preferredWidth: 80
+                        }
+
+                        Slider {
+                            id: initChanceSlider
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: true
+                            // live: true
+                            // from: 0
+                            // to: 100
+                            onValueChanged: {
+                                initChanceChanged(value);
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        Text {
+                            text: "Born limits:"
+                            Layout.preferredWidth: 80
+                        }
+                        SpinBox {
+                            id: bornCountSpinBox
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: true
+                            editable: true
+                            from: 0
+                            to: 7
+                            onValueChanged: {
+                                bornLimitsChanged();
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        Text {
+                            text: "Life limits:"
+                            Layout.preferredWidth: 80
+                        }
+                        SpinBox {
+                            id: lifeCountSpinBox
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: true
+                            editable: true
+                            from: 0
+                            to: 7
+                            onValueChanged: {
+                                lifeLimitsChanged(); }
+                            }
+                        }
+
+                        Button {
+                            id: generateButtonCave
+                            text: "Generate"
+                            font.pixelSize: 18
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignHCenter
+                            onClicked: {
+                                View.generateCave();
+                            }
                         }
                     }
                 }
+                // Связывание сигналов с соответствующими слотами в C++
+                Component.onCompleted: {
+                    initChanceChanged.connect(caveGenerator.setInitChance)
+                    bornLimitsChanged.connect(caveGenerator.setBornLimits)
+                    lifeLimitsChanged.connect(caveGenerator.setLifeLimits)
+                }
             }
         }
-    }

@@ -25,6 +25,9 @@ class DesktopView : public QObject {
   Q_PROPERTY(int caveWidth READ getWidthCave WRITE setWidthCave NOTIFY
                  caveHeightChanged)
 
+  // Q_PROPERTY(CaveGenerator::Settings initChance READ getInitChance WRITE
+  //                setInitChance NOTIFY initChanceChanged)
+
  public:
   DesktopView(Controller &controller, QObject *parent = nullptr)
       : QObject{parent},
@@ -46,6 +49,8 @@ class DesktopView : public QObject {
   Q_INVOKABLE void generateCave();
   Q_INVOKABLE int getHeightCave() { return this->controller_.getHeightCave(); }
   Q_INVOKABLE int getWidthCave() { return this->controller_.getWidthCave(); }
+
+  // Q_INVOKABLE int getSettings() { return this->controller_.getSSettings(); }
 
   inline CaveGenerator &getCave() { return this->controller_.getCave(); }
 
@@ -73,11 +78,38 @@ class DesktopView : public QObject {
     emit mazeWidthChanged();
   }
 
+  // inline void setBornLimits(int born_limits) {
+  //   this->controller_.setBornLimits(born_limits);
+  //   emit bornLimitsChanged();
+  // }
+
+  // inline void setLifeLimits(int life_limits) {
+  //   this->controller_.setLifeLimits(life_limits);
+  //   emit lifeLimitsChanged();
+  // }
+
+  // inline void setInitChance(double init_chance) {
+  //   this->controller_.setInitChance(init_chance);
+  //   emit initChanceChanged();
+  // }
+
  public slots:
   void saveMazeInFile(const QString &filePath);
   void loadMazeFromFile(const QString &filePath);
   void saveCaveInFile(const QString &filePath);
   void loadCaveFromFile(const QString &filePath);
+
+  void setInitChance(double value) {
+    this->controller_.getSettings().init_chance = value;
+  }
+
+  void setBornLimits(int value) {
+    this->controller_.getSettings().born_limits = value;
+  }
+
+  void setLifeLimits(int value) {
+    this->controller_.getSettings().death_limits = value;
+  }
 
  signals:
   void mazeDataChanged();
@@ -86,6 +118,9 @@ class DesktopView : public QObject {
   void caveDataChanged();
   void caveHeightChanged();
   void caveWidthChanged();
+  void initChanceChanged();
+  void bornLimitsChanged();
+  void lifeLimitsChanged();
 
  private:
   Controller &controller_;

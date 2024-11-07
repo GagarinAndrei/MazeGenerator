@@ -8,6 +8,9 @@
 namespace s21 {
 
 class CaveGenerator {
+ public:
+  CaveGenerator() {};
+  ~CaveGenerator() {};
   struct Settings {
     int width = 1;
     int height = 1;
@@ -15,10 +18,6 @@ class CaveGenerator {
     int born_limits = 0;
     int death_limits = 0;
   };
-
- public:
-  CaveGenerator() {};
-  ~CaveGenerator() {};
 
   void generate();
   void saveCaveInFile(const std::string &filename);
@@ -32,13 +31,13 @@ class CaveGenerator {
   inline std::vector<std::vector<int>> &getCave() { return this->cave_; }
   inline int getHeight() { return this->height_; }
   inline int getWidth() { return this->width_; }
+  void resizeCave(int height, int width);
 
   // TODO Deelete before finish project
   void printCave();
 
  private:
   bool trueOrFalseGenerator();
-  void resizeCave(int height, int width);
   int countLiveNeighbors(std::vector<std::vector<int>> cave, int x, int y);
   void generateFirstGeneration();
   void generateNextGeneration();

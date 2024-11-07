@@ -84,36 +84,18 @@ TEST(path_finder_test, test_3) {
   EXPECT_EQ(maze.getPath(), expected_path);
 }
 
-// TEST(cave_print, test_1) {
-//   int height = 50;
-//   int width = 50;
-//   double probability = 0.6;
-//   int born_limits = 5;
-//   int death_limits = 4;
-//   s21::CaveGenerator cave;
-//   cave.setSettings({width, height, probability, born_limits, death_limits});
-//   cave.generate();
-// }
-
 TEST(cave_generator_test, test_2) {
   s21::CaveGenerator caveGenerator;
   caveGenerator.setSettings({50, 50, 0.6, 5, 4});
   caveGenerator.generate();
-
-  // Проверяем, что пещера была сгенерирована корректно
-  // Предположим, что у вас есть метод getCaveData(), который возвращает данные
-  // пещеры
   std::vector<std::vector<int>> caveData = caveGenerator.getCave();
 
-  // Проверяем, что пещера не пустая
   EXPECT_FALSE(caveData.empty());
 
-  // Проверяем, что все строки пещеры имеют одинаковую длину
   for (const auto& row : caveData) {
     EXPECT_EQ(row.size(), caveData[0].size());
   }
 
-  // Проверяем, что пещера содержит как минимум одну стену и одну пустую ячейку
   bool hasWall = false;
   bool hasEmpty = false;
   for (const auto& row : caveData) {
@@ -134,17 +116,13 @@ TEST(cave_generator_test, test_3) {
   caveGenerator.generate();
   std::string filename = "test_cave.txt";
 
-  // Вызываем метод saveCaveInFile
   caveGenerator.saveCaveInFile(filename);
 
-  // Проверяем, что файл был создан
   ASSERT_TRUE(std::filesystem::exists(filename));
 
-  // Открываем файл для чтения
   std::ifstream file(filename);
   ASSERT_TRUE(file.is_open());
 
-  // Считываем данные из файла
   int height, width;
   file >> height >> width;
   ASSERT_EQ(height, caveGenerator.getHeight());
@@ -159,14 +137,11 @@ TEST(cave_generator_test, test_3) {
     }
   }
 
-  // Проверяем, что данные совпадают с данными пещеры
   std::vector<std::vector<int>> originalCaveData = caveGenerator.getCave();
   ASSERT_EQ(caveData, originalCaveData);
 
-  // Закрываем файл
   file.close();
 
-  // Удаляем тестовый файл
   std::filesystem::remove(filename);
 }
 
@@ -176,23 +151,30 @@ TEST(cave_generator_test, test_4) {
   caveGenerator.generate();
   std::string filename = "test_cave.txt";
 
-  // Вызываем метод saveCaveInFile
   caveGenerator.saveCaveInFile(filename);
 
-  // Создаем новый объект CaveGenerator
   s21::CaveGenerator loadedCaveGenerator;
 
-  // Вызываем метод loadCaveFromFile
   loadedCaveGenerator.loadCaveFromFile(filename);
 
-  // Проверяем, что данные пещеры совпадают с данными из файла
   std::vector<std::vector<int>> originalCaveData = caveGenerator.getCave();
   std::vector<std::vector<int>> loadedCaveData = loadedCaveGenerator.getCave();
   ASSERT_EQ(originalCaveData, loadedCaveData);
 
-  // Удаляем тестовый файл
   std::filesystem::remove(filename);
 }
+
+TEST(cave_print, test_1) {
+  int height = 50;
+  int width = 50;
+  double probability = 0.6;
+  int born_limits = 5;
+  int death_limits = 4;
+  s21::CaveGenerator cave;
+  cave.setSettings({width, height, probability, born_limits, death_limits});
+  cave.generate();
+}
+
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
