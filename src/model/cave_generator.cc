@@ -7,16 +7,21 @@
 
 namespace s21 {
 void CaveGenerator::resizeCave(int height, int width) {
-  this->cave_.resize(height_);
+  this->cave_.resize(this->settings_.height);
   for (auto &row : cave_) {
-    row.resize(width_);
+    row.resize(this->settings_.width);
   }
 }
 
 void CaveGenerator::generate() {
   this->generateFirstGeneration();
+  std::cout << "_______________________________" << std::endl;
+
+  this->printCave();
   while (!isGenerationFinished()) {
     this->generateNextGeneration();
+    std::cout << "_______________________________" << std::endl;
+    this->printCave();
   }
 }
 
@@ -25,7 +30,7 @@ void CaveGenerator::saveCaveInFile(const std::string &filename) {
   file.open(filename);
 
   if (file.is_open()) {
-    file << this->height_ << " " << this->width_ << std::endl;
+    file << this->settings_.height << " " << this->settings_.width << std::endl;
 
     for (size_t i = 0; i < this->cave_.size(); i++) {
       for (size_t j = 0; j < this->cave_[0].size(); j++) {
@@ -44,11 +49,11 @@ void CaveGenerator::loadCaveFromFile(const std::string &filename) {
     throw std::runtime_error("Failed to open file");
   }
 
-  file >> height_ >> width_;
-  this->resizeCave(height_, width_);
+  file >> settings_.height >> settings_.width;
+  this->resizeCave(this->settings_.height, this->settings_.width);
 
-  for (int i = 0; i < this->height_; ++i) {
-    for (int j = 0; j < this->width_; ++j) {
+  for (int i = 0; i < this->settings_.height; ++i) {
+    for (int j = 0; j < this->settings_.width; ++j) {
       int wall;
       file >> wall;
       cave_[i][j] = (wall == 1);
@@ -60,9 +65,9 @@ void CaveGenerator::loadCaveFromFile(const std::string &filename) {
 
 void CaveGenerator::setSettings(Settings settings) {
   this->settings_ = settings;
-  this->height_ = settings.height;
-  this->width_ = settings.width;
-  this->resizeCave(this->height_, this->width_);
+  // this->height_ = settings.height;
+  // this->width_ = settings.width;
+  this->resizeCave(this->settings_.height, this->settings_.width);
 }
 
 int CaveGenerator::countLiveNeighbors(std::vector<std::vector<int>> cave, int x,
@@ -88,8 +93,8 @@ int CaveGenerator::countLiveNeighbors(std::vector<std::vector<int>> cave, int x,
 }
 
 void CaveGenerator::generateFirstGeneration() {
-  for (int i = 0; i < height_; i++) {
-    for (int j = 0; j < width_; j++) {
+  for (int i = 0; i < this->settings_.height; i++) {
+    for (int j = 0; j < this->settings_.width; j++) {
       cave_[i][j] = trueOrFalseGenerator();
     }
   }
@@ -122,16 +127,17 @@ bool CaveGenerator::trueOrFalseGenerator() {
   return dis(gen);
 }
 
-// void CaveGenerator::printCave() {
-//   for (std::vector<int> &row : this->cave_) {
-//     for (int &cell : row) {
-//       if (cell == true) {
-//         std::cout << " ";
-//       } else {
-//         std::cout << "X";
-//       }
-//     }
-//     std::cout << "|" << std::endl;
-//   }
-// }
+// TODO Delete before finish project
+void CaveGenerator::printCave() {
+  for (std::vector<int> &row : this->cave_) {
+    for (int &cell : row) {
+      if (cell == true) {
+        std::cout << " ";
+      } else {
+        std::cout << "X";
+      }
+    }
+    std::cout << "|" << std::endl;
+  }
+}
 }  // namespace s21

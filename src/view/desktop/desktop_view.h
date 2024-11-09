@@ -1,6 +1,7 @@
 #ifndef VIEW_DESKTOP_VIEW_H_
 #define VIEW_DESKTOP_VIEW_H_
 
+#include <qlogging.h>
 #include <qpoint.h>
 #include <qtmetamacros.h>
 #include <qvariant.h>
@@ -26,8 +27,9 @@ class DesktopView : public QObject {
   Q_PROPERTY(int caveWidth READ getWidthCave WRITE setWidthCave NOTIFY
                  caveHeightChanged)
 
-  Q_PROPERTY(CaveGenerator::Settings caveSettings /*READ getCaveSettings*/ WRITE
-                 setCaveSettings NOTIFY caveSettingsChanged)
+  // Q_PROPERTY(CaveGenerator::Settings caveSettings /*READ getCaveSettings*/
+  // WRITE
+  //                setCaveSettings NOTIFY caveSettingsChanged)
 
  public:
   DesktopView(Controller &controller, QObject *parent = nullptr)
@@ -58,12 +60,14 @@ class DesktopView : public QObject {
 
   inline void setHeightCave(int height) {
     this->controller_.setHeightCave(height);
+    this->controller_.getSettings().height = height;
     this->caveWidth_ = height;
     emit caveHeightChanged();
   }
 
   inline void setWidthCave(int width) {
     this->controller_.setWidthCave(width);
+    this->controller_.getSettings().width = width;
     this->mazeWidth_ = width;
     emit caveWidthChanged();
   }
@@ -80,9 +84,23 @@ class DesktopView : public QObject {
     emit mazeWidthChanged();
   }
 
-  inline void setCaveSettings(const CaveGenerator::Settings &settings) {
-    this->controller_.setSettings(settings);
-    emit caveDataChanged();
+  // inline void setCaveSettings(const CaveGenerator::Settings &settings) {
+  //   this->controller_.setSettings(settings);
+  //   emit caveDataChanged();
+  // }
+
+  Q_INVOKABLE inline void setBornLimits(int value) {
+    this->controller_.getSettings().born_limits = value;
+    qDebug() << this->controller_.getSettings().born_limits;
+  }
+
+  Q_INVOKABLE inline void setLifeLimits(int value) {
+    this->controller_.getSettings().death_limits = value;
+    qDebug() << this->controller_.getSettings().death_limits;
+  }
+  Q_INVOKABLE inline void setInitChance(double value) {
+    this->controller_.getSettings().init_chance = value;
+    qDebug() << this->controller_.getSettings().init_chance;
   }
 
  public slots:

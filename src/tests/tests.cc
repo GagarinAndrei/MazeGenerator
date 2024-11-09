@@ -167,7 +167,7 @@ TEST(cave_generator_test, test_4) {
 TEST(cave_print, test_1) {
   int height = 50;
   int width = 50;
-  double probability = 0.6;
+  float probability = 0.6;
   int born_limits = 5;
   int death_limits = 4;
   s21::CaveGenerator cave;

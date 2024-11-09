@@ -425,7 +425,7 @@ ApplicationWindow {
                         Layout.fillWidth: true
                         from: 0
                         to: 100
-                        onValueChanged: View.setSettings(value)
+                        onValueChanged: View.setInitChance(value)
                     }
                 }
 
@@ -441,7 +441,7 @@ ApplicationWindow {
                         editable: true
                         from: 0
                         to: 7
-                        onValueChanged: View.setSettings(value)
+                        onValueChanged: View.setBornLimits(value)
                     }
                 }
 
@@ -457,7 +457,7 @@ ApplicationWindow {
                         editable: true
                         from: 0
                         to: 7
-                        onValueChanged: View.setSettings(value)
+                        onValueChanged: View.setLifeLimits(value)
                     }
                 }
 
