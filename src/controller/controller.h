@@ -36,6 +36,9 @@ class Controller {
     this->cave_generator_.setHeight(height);
   }
   inline void setWidthCave(int width) { this->cave_generator_.setWidth(width); }
+  inline void setSettings(const CaveGenerator::Settings &settings) {
+    this->cave_generator_.setSettings(settings);
+  }
   inline void saveCaveInFile(const std::string &filePath) {
     this->cave_generator_.saveCaveInFile(filePath);
   };
